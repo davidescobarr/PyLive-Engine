@@ -6,9 +6,7 @@ import pygame
 import random
 
 # Import from project
-import logger
-from core.logger import Logger, TypesLog
-
+from .logger import Logger, TypesLog
 
 class Game:
     def __init__(self,
@@ -23,6 +21,9 @@ class Game:
         self.__fps = fps
         self.__logger = logger
         self.__name = name
+        self.__run = False
+        self.__clock = None
+        self.__screen = None
 
     @property
     def fps(self):
@@ -54,6 +55,18 @@ class Game:
         # создаем игру и окно
         pygame.init()
         pygame.mixer.init()  # для звука
-        screen = pygame.display.set_mode((self.__width, self.__height))
         pygame.display.set_caption(self.__name)
-        clock = pygame.time.Clock()
+        self.__clock = pygame.time.Clock()
+        self.__screen = pygame.display.set_mode((self.__width, self.__height))
+        self.__run = True
+        self.game_loop()
+
+    def game_loop(self):
+        while self.__run:
+            # Держим цикл на правильной скорости
+            self.__clock.tick(self.__fps)
+            # Ввод процесса (события)
+            for event in pygame.event.get():
+                # check for closing window
+                if event.type == pygame.QUIT:
+                    self.__run = False
