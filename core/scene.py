@@ -35,5 +35,6 @@ class Scene:
     def update(self) -> None:
         for game_object in self.__objects:
             game_object.before_update()
+            game_object.update_properties()
             game_object.update()
             game_object.after_update()

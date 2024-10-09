@@ -14,13 +14,13 @@ class Game:
                  height: Optional[int] = 480,
                  fps: Optional[int] = 30,
                  logger: Optional[Logger] = Logger(),
-                 name: Optional[str] = 'Game'
+                 title: Optional[str] = 'Game'
                  ) -> None:
         self.__width = width
         self.__height = height
         self.__fps = fps
         self.__logger = logger
-        self.__name = name
+        self.__title = title
         self.__run = False
         self.__clock = None
         self.__screen = None
@@ -31,12 +31,12 @@ class Game:
 
     @property
     def fps(self):
-        return self.__FPS
+        return self.__fps
 
     @fps.setter
     def fps(self, fps):
         if fps > 0:
-            self.__FPS = fps
+            self.__fps = fps
         else:
             self.__logger.log("Невозможно установить отрицательный FPS", TypesLog.WARNING)
 
@@ -56,10 +56,9 @@ class Game:
             self.__logger.log("Невозможно установить разрешение " + width + "x" + height, TypesLog.WARNING)
 
     def start(self):
-        # создаем игру и окно
         pygame.init()
         pygame.mixer.init()  # для звука
-        pygame.display.set_caption(self.__name)
+        pygame.display.set_caption(self.__title)
         self.__clock = pygame.time.Clock()
         self.__screen = pygame.display.set_mode((self.__width, self.__height))
         self.__run = True
@@ -74,9 +73,7 @@ class Game:
 
     def game_loop(self):
         while self.__run:
-            # Держим цикл на правильной скорости
             self.__clock.tick(self.__fps)
-            # Ввод процесса (события)
             for event in pygame.event.get():
                 # check for closing window
                 if event.type == pygame.QUIT:
