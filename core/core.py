@@ -1,5 +1,5 @@
 # Import from lib
-from msilib.schema import Property
+import sys
 from typing import Optional
 
 import pygame
@@ -24,6 +24,10 @@ class Game:
         self.__run = False
         self.__clock = None
         self.__screen = None
+
+    @property
+    def logger(self):
+        return self.__logger
 
     @property
     def fps(self):
@@ -61,6 +65,13 @@ class Game:
         self.__run = True
         self.game_loop()
 
+    def stop(self):
+        self.__run = False
+        pygame.display.quit()
+        pygame.mixer.quit()
+        pygame.quit()
+        sys.exit()
+
     def game_loop(self):
         while self.__run:
             # Держим цикл на правильной скорости
@@ -69,4 +80,4 @@ class Game:
             for event in pygame.event.get():
                 # check for closing window
                 if event.type == pygame.QUIT:
-                    self.__run = False
+                    self.stop()
