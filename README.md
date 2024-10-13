@@ -7,3 +7,5 @@ Current tasks:
 - [ ] Task 3: Adding canvas
 - [ ] Task 4: Adding physics
 - [ ] Task 5: Adding colliders
+- [ ] Task 6: Finish do logger
+- [ ] Task 7: Added events system
