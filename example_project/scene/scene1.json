@@ -1,0 +1,56 @@
+{
+  "name_scene": "scene1",
+  "objects": [
+    {
+      "name": "folder_objects",
+      "type": "group",
+      "objects": [
+        {
+          "name": "object1",
+          "type": "object",
+          "properties": {
+            "class": "scripts/Object.py",
+            "className": "CustomObject",
+            "position": {
+              "x": 100,
+              "y": 100
+            },
+            "scale": {
+              "width": 100,
+              "height": 100
+            },
+            "color": {
+              "r": 0,
+              "g": 255,
+              "b": 255
+            },
+            "image": {
+              "path_file": "assets/images.png"
+            }
+          }
+        },
+        {
+          "name": "object2",
+          "type": "object",
+          "properties": {
+            "class": "scripts/Object.py",
+            "className": "CustomObject",
+            "position": {
+              "x": 0,
+              "y": 0
+            },
+            "scale": {
+              "width": 25,
+              "height": 25
+            },
+            "color": {
+              "r": 0,
+              "g": 255,
+              "b": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

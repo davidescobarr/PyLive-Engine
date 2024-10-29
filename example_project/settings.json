@@ -1,0 +1,13 @@
+{
+  "name_project": "example_project",
+  "version": "1.0",
+  "version_engine": "dev",
+  "requirements": "",
+  "path_assets": "/assets",
+  "path_scene": "/scene",
+  "path_scripts": "/scripts",
+  "compiler": "default",
+  "fps": 120,
+  "width_window": 400,
+  "height_window": 400
+}

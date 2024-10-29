@@ -1,80 +1,76 @@
-# Import from lib
+import os
 import sys
-from typing import Optional
+from glob import glob
 
 import pygame
-import random
 
-# Import from project
-from .logger import Logger, TypesLog
+from core.events.EventKeyboard import EventKeyboard
+from core.events.EventMouse import EventMouse
+from core.events.EventQuit import EventQuit
+from core.render import Render
+from core.scene import Scene
+from core.settings import Settings
+
 
 class Game:
-    def __init__(self,
-                 width: Optional[int] = 360,
-                 height: Optional[int] = 480,
-                 fps: Optional[int] = 30,
-                 logger: Optional[Logger] = Logger(),
-                 title: Optional[str] = 'Game'
-                 ) -> None:
-        self.__width = width
-        self.__height = height
-        self.__fps = fps
-        self.__logger = logger
-        self.__title = title
-        self.__run = False
-        self.__clock = None
-        self.__screen = None
+    def __init__(self, settings: Settings):
+        self.__settings =  settings
+        self.__game_loop = False
+        self.__render = None
+        self.__scenes = []
+        self.__current_scene = None
+        self.__clock = pygame.time.Clock()
 
-    @property
-    def logger(self):
-        return self.__logger
+    def load_scenes(self) -> bool:
+        files_scenes = self.get_files("./" + self.__settings.name_project + self.__settings.path_scene)
 
-    @property
-    def fps(self):
-        return self.__fps
+        if len(files_scenes) == 0:
+            print("Scenes not found while loading game; core.py:28")
+            return False
 
-    @fps.setter
-    def fps(self, fps):
-        if fps > 0:
-            self.__fps = fps
-        else:
-            self.__logger.log("Невозможно установить отрицательный FPS", TypesLog.WARNING)
-
-    @property
-    def width(self):
-        return self.__width
-
-    @property
-    def height(self):
-        return self.__height
-
-    def set_size(self, width: int, height: int):
-        if width > 0 and height > 0:
-            self.__width = width
-            self.__height = height
-        else:
-            self.__logger.log("Невозможно установить разрешение " + width + "x" + height, TypesLog.WARNING)
+        for scene_file in files_scenes:
+            self.__scenes.append(Scene(scene_file))
 
     def start(self):
+        print("Init PyGame...")
         pygame.init()
-        pygame.mixer.init()  # для звука
-        pygame.display.set_caption(self.__title)
-        self.__clock = pygame.time.Clock()
-        self.__screen = pygame.display.set_mode((self.__width, self.__height))
-        self.__run = True
+        print("Load scenes...")
+        self.load_scenes()
+
+        print("Load objects from scene...")
+        self.__current_scene = self.__scenes[0].load_objects()
+
+        if self.__current_scene is None:
+            print("Scene can't loaded while start game; core.py:44")
+            return
+
+        print("Init render...")
+        if not pygame.image.get_extended():
+            print("Your system not supported png and jpeg formats for images")
+        self.__render = Render(self.__current_scene, self.__settings.width_window, self.__settings.height_window)
+
+        print("Start game loop...")
+        self.__game_loop = True
         self.game_loop()
 
-    def stop(self):
-        self.__run = False
-        pygame.display.quit()
-        pygame.mixer.quit()
-        pygame.quit()
-        sys.exit()
-
     def game_loop(self):
-        while self.__run:
-            self.__clock.tick(self.__fps)
+        while self.__game_loop:
+            self.__render.update()
+
             for event in pygame.event.get():
-                # check for closing window
                 if event.type == pygame.QUIT:
-                    self.stop()
+                    self.__current_scene.on_event(EventQuit())
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEWHEEL or event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
+                    self.__current_scene.on_event(EventMouse(event))
+                elif event.type == pygame.KEYUP or event.type == pygame.KEYDOWN:
+                    self.__current_scene.on_event(EventKeyboard(event))
+
+            self.__current_scene.update_objects()
+
+            self.__clock.tick(self.__settings.fps)
+
+    @staticmethod
+    def get_files(dir):
+        return glob(os.path.join(dir, '*.json'))
