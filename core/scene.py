@@ -12,14 +12,16 @@ class Scene:
         self.__path_project = file_path + "/../"
         self.__objects = []
 
-
     def get_scene_file(self):
+        return self.__file_path
+
+    def get_scene_objects(self):
         with open(self.__file_path) as file:
             scene_file = json.load(file)
         return scene_file
 
     def load_objects(self):
-        scene_file = self.get_scene_file()
+        scene_file = self.get_scene_objects()
 
         if scene_file is None:
             print("scene.py:13 error while loading scene: scene file not found")

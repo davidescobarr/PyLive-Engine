@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QApplication, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget
 import sys
 
-from engine.widgets.PropertyObjectWidget import PropertyObjectWidget
+from old_engine.widgets.PropertyObjectWidget import PropertyObjectWidget
 
 
 class HierarchyWidget(QWidget):

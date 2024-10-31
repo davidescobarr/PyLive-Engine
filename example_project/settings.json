@@ -9,5 +9,6 @@
   "compiler": "default",
   "fps": 120,
   "width_window": 400,
-  "height_window": 400
+  "height_window": 400,
+  "current_scene": ""
 }

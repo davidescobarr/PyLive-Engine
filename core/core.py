@@ -1,7 +1,6 @@
 import os
 import sys
 from glob import glob
-from threading import Thread
 
 import pygame
 

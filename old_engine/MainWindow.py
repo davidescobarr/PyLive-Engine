@@ -1,17 +1,14 @@
-import sys
-
-from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget,
     QGridLayout, QMenu, QMessageBox, QMenuBar
 )
 from PyQt6.QtGui import QAction
 
-from engine.Project import Project
-from engine.widgets.FileBrowser import FileBrowser
-from engine.widgets.HierarchyWidget import HierarchyWidget
-from engine.widgets.ProjectManager import ProjectManager
-from engine.widgets.PropertyObjectWidget import PropertyObjectWidget
+from old_engine.Project import Project
+from old_engine.widgets.FileBrowser import FileBrowser
+from old_engine.widgets.HierarchyWidget import HierarchyWidget
+from old_engine.widgets.ProjectManager import ProjectManager
+from old_engine.widgets.PropertyObjectWidget import PropertyObjectWidget
 
 class MainWindow(QMainWindow):
     def __init__(self, app):
@@ -107,7 +104,7 @@ class MainWindow(QMainWindow):
         print("Сохранение файла")
 
     def about(self):
-        print("О программе")
+        print(self.__project.get_objects())
 
     def load_project(self, project_path):
         self.__project = Project(project_path)
