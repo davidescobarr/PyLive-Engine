@@ -9,11 +9,17 @@ from core.objects.Object import Object
 class Scene:
     def __init__(self, file_path: str) -> None:
         self.__file_path = file_path
+        self.__path_project = file_path + "/../"
         self.__objects = []
 
-    def load_objects(self):
+
+    def get_scene_file(self):
         with open(self.__file_path) as file:
             scene_file = json.load(file)
+        return scene_file
+
+    def load_objects(self):
+        scene_file = self.get_scene_file()
 
         if scene_file is None:
             print("scene.py:13 error while loading scene: scene file not found")
@@ -24,7 +30,7 @@ class Scene:
 
     def load_object(self, object):
         properties = object['properties']
-        object = self.load_class_from_file("example_project/" + properties['class'], properties['className'])
+        object = self.load_class_from_file(self.__path_project + properties['class'], properties['className'])
         if isinstance(object, Object):
             object.load_properties(properties)
             self.__objects.append(object)

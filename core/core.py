@@ -1,6 +1,7 @@
 import os
 import sys
 from glob import glob
+from threading import Thread
 
 import pygame
 
@@ -31,7 +32,10 @@ class Game:
         for scene_file in files_scenes:
             self.__scenes.append(Scene(scene_file))
 
-    def start(self):
+    def get_render(self) -> Render:
+        return self.__render
+
+    def run(self):
         print("Init PyGame...")
         pygame.init()
         print("Load scenes...")

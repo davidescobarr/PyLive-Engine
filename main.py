@@ -1,6 +1,13 @@
-from core.core import Game
-from core.settings import Settings
+import sys
+
+from PyQt6.QtWidgets import QApplication
+
+from engine.MainWindow import MainWindow
+
+import engine.main
 
 if __name__ == '__main__':
-    game = Game(Settings("./example_project/settings.json"))
-    game.start()
+    app = QApplication(sys.argv)
+    main_window = MainWindow(app)
+    main_window.show()
+    sys.exit(app.exec())

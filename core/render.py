@@ -29,3 +29,6 @@ class Render:
 
         pygame.display.flip()
         pygame.display.update()
+
+    def get_surface(self):
+        return self.__sc
