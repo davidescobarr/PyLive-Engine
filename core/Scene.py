@@ -78,10 +78,17 @@ class Scene:
             object.on_event(event)
 
     def save(self):
-        scene = {
-            "name": self.__name,
-            "objects": [self.__main_group.to_dict()]
-        }
+        scene = Scene.default_structure(self.name)
+        scene['objects'] = self.__main_group.to_dict()
 
         with open(self.__file_path, 'w') as file:
             json.dump(file, scene)
+
+    @staticmethod
+    def default_structure(name: str) -> dict[str, str | list]:
+        scene = {
+            "name": name,
+            "objects": []
+        }
+
+        return scene

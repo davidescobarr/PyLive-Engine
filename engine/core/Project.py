@@ -1,8 +1,9 @@
+import json
 import os
 from glob import glob
 from typing import List
 
-from core.scene import Scene
+from core.Scene import Scene
 from core.settings import Settings
 
 
@@ -13,9 +14,6 @@ class Project:
 
         self.__scenes = []
         self.__current_scene = None
-
-    def init_project(self):
-        pass
 
     def init_scenes(self) -> List[Scene]:
         path_scenes = self.__path + "/" + self.__settings.path_scene
@@ -34,7 +32,11 @@ class Project:
         print(f"Scene was loaded")
 
     def create_new_scene(self, name: str):
-        pass
+        scene = Scene.default_structure(name)
+        path_scene = self.__path + "/" + self.__settings.path_scene + name + ".json"
+
+        with open(path_scene, 'w') as file:
+            json.dump(file, scene)
 
     def get_scenes(self) -> List[Scene]:
         return self.__scenes
