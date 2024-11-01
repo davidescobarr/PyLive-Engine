@@ -1,5 +1,5 @@
 {
-  "name_scene": "scene1",
+  "name": "scene1",
   "objects": [
     {
       "name": "folder_objects",

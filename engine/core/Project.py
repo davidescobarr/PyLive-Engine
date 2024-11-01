@@ -29,6 +29,7 @@ class Project:
         return self.__scenes
 
     def init_current_scene(self, scene: Scene) -> None:
+        scene.load_objects()
         self.__current_scene = scene
         print(f"Scene was loaded")
 

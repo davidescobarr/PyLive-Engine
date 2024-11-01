@@ -1,9 +1,11 @@
 import json
-import importlib.util
-import sys
+from typing import Optional
 
 from core.events.Event import Event
 from core.objects.Object import Object
+from core.scene.components.Group import Group
+from core.scene.components.Object import SceneObject
+from core.utils.ClassLoader import load_class_from_file
 
 
 class Scene:
@@ -11,6 +13,17 @@ class Scene:
         self.__file_path = file_path
         self.__path_project = file_path + "/../"
         self.__objects = []
+        self.hierarchy_objects = []
+        self.__main_group = None
+        self.__name = self.get_scene_objects()["name"]
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @name.setter
+    def name(self, name: str):
+        self.__name = name
 
     def get_scene_file(self):
         return self.__file_path
@@ -27,24 +40,31 @@ class Scene:
             print("scene.py:13 error while loading scene: scene file not found")
             return None
 
-        self.load_group(scene_file['objects'])
+        self.__main_group = self.load_group(scene_file['objects'])
         return self
 
-    def load_object(self, object):
+    def load_object(self, object) -> Optional[SceneObject | None]:
         properties = object['properties']
-        object = self.load_class_from_file(self.__path_project + properties['class'], properties['className'])
+        object = load_class_from_file(self.__path_project + properties['class'], properties['className'])
         if isinstance(object, Object):
             object.load_properties(properties)
             self.__objects.append(object)
+            return SceneObject(self, object)
         else:
             print("Class object not extends base class Object! scene.py:29")
 
-    def load_group(self, group):
+        return None
+
+    def load_group(self, group) -> Group:
+        scene_group = Group(self, group["name"])
+
         for object in group:
             if object['type'] == "group":
-                self.load_group(object['objects'])
+                scene_group.add_object(self.load_group(object['objects']))
             if object['type'] == "object":
-                self.load_object(object)
+                scene_group.add_object(self.load_object(object))
+
+        return scene_group
 
     def get_objects(self):
         return self.__objects
@@ -57,12 +77,11 @@ class Scene:
         for object in self.__objects:
             object.on_event(event)
 
-    @staticmethod
-    def load_class_from_file(file_path, class_name):
-        spec = importlib.util.spec_from_file_location("module_name", file_path)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules["module_name"] = module
-        spec.loader.exec_module(module)
+    def save(self):
+        scene = {
+            "name": self.__name,
+            "objects": [self.__main_group.to_dict()]
+        }
 
-        cls = getattr(module, class_name)
-        return cls()
+        with open(self.__file_path, 'w') as file:
+            json.dump(file, scene)
