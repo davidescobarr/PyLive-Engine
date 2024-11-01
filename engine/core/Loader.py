@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from core.settings import Settings
+from core.Settings import Settings
 from engine.core.Project import Project
 
 class Loader:

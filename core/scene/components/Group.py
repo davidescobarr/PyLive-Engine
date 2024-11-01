@@ -1,4 +1,3 @@
-from gc import get_objects
 from typing import List, override
 
 from core import Scene

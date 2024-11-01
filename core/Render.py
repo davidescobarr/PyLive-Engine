@@ -2,7 +2,7 @@ import pygame.display
 
 from core.objects.Object import TypesObject
 from core.properties.Image import Image
-from core.scene import Scene
+from core.Scene import Scene
 
 
 class Render:

@@ -1,6 +1,3 @@
-import pygame
-from pygame.event import EventType
-
 from core.events.Event import Event
 
 

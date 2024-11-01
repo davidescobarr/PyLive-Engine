@@ -1,6 +1,6 @@
 import json
 
-from core.scene import Scene
+from core.Scene import Scene
 
 
 class Settings:

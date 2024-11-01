@@ -9,7 +9,7 @@ from core.events.EventMouse import EventMouse
 from core.events.EventQuit import EventQuit
 from core.render import Render
 from core.scene import Scene
-from core.settings import Settings
+from core.Settings import Settings
 
 
 class Game:

@@ -4,7 +4,7 @@ from glob import glob
 from typing import List
 
 from core.Scene import Scene
-from core.settings import Settings
+from core.Settings import Settings
 
 
 class Project:
