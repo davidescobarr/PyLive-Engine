@@ -1,41 +1,16 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton
 
+from PySide6.QtWidgets import QMainWindow, QApplication
 
-class Window1(QWidget):
-    def __init__(self):
-        super(Window1, self).__init__()
-        self.setWindowTitle('Window1')
-        self.setMinimumWidth(200)
-        self.setMinimumHeight(50)
-        self.button = QPushButton(self)
-        self.button.setText('Ok')
-        self.button.show()
-
-
-class Window2(QWidget):
-    def __init__(self):
-        super(Window2, self).__init__()
-        self.setWindowTitle('Window2')
-
+from engine.ui.window.project_manager.ProjectManager import ProjectManager_UI
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setWindowTitle('MainWindow')
-
-    def show_window_1(self):
-        self.w1 = Window1()
-        self.w1.button.clicked.connect(self.show_window_2)
-        self.w1.button.clicked.connect(self.w1.close)
-        self.w1.show()
-
-    def show_window_2(self):
-        self.w2 = Window2()
-        self.w2.show()
+        self.ui = ProjectManager_UI(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = MainWindow()
-    w.show_window_1()
+    w.show()
     sys.exit(app.exec())

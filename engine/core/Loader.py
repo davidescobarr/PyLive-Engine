@@ -1,13 +1,16 @@
 import os
 from typing import Optional
 
+from PySide6.QtWidgets import QMainWindow
+
 from core.Settings import Settings
 from engine.core.Project import Project
 
 class Loader:
-    def __init__(self):
+    def __init__(self, MainWindow: QMainWindow):
         self.__path = ""
         self.__settings = ""
+        self.MainWindow = MainWindow
 
     def load_engine(self, path_project: str) -> bool:
         print("Load engine...")
@@ -37,13 +40,14 @@ class Loader:
 
         return True
 
-    def create_project(self, folder: str) -> Project:
+    def create_project(self, folder: str, name_project: str) -> Project:
         settings = Settings(folder + "/settings.json")
 
-        if settings.is_loaded:
+        if not settings.is_new:
             return self.open_project(folder)
 
         settings.set_default_values()
+        settings.set_name_project(name_project)
         settings.save()
 
         os.makedirs(os.path.join(folder, 'assets'), exist_ok=True)

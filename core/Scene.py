@@ -9,9 +9,9 @@ from core.utils.ClassLoader import load_class_from_file
 
 
 class Scene:
-    def __init__(self, file_path: str) -> None:
+    def __init__(self, path, file_path: str) -> None:
         self.__file_path = file_path
-        self.__path_project = file_path + "/../"
+        self.__path_project = path + "/../"
         self.__objects = []
         self.hierarchy_objects = []
         self.__main_group = None
@@ -56,7 +56,10 @@ class Scene:
         return None
 
     def load_group(self, group) -> Group:
-        scene_group = Group(self, group["name"])
+        if "name" in group:
+            scene_group = Group(self, group["name"])
+        else:
+            scene_group = Group(self, "group")
 
         for object in group:
             if object['type'] == "group":
@@ -82,7 +85,7 @@ class Scene:
         scene['objects'] = self.__main_group.to_dict()
 
         with open(self.__file_path, 'w') as file:
-            json.dump(file, scene)
+            json.dump(scene, file)
 
     @staticmethod
     def default_structure(name: str) -> dict[str, str | list]:

@@ -6,6 +6,7 @@ from core.Scene import Scene
 class Settings:
     def __init__(self, path_file_settings: str):
         self.__is_loaded = False
+        self.__is_new = True
         self.__path = path_file_settings
 
         self.__nameProject = ""
@@ -25,6 +26,8 @@ class Settings:
         if not self.load():
             self.set_default_values()
             self.save()
+        else:
+            self.__is_new = False
 
     def set_default_values(self):
         self.__nameProject = "project"
@@ -42,19 +45,34 @@ class Settings:
         self.__is_loaded = True
 
     def save(self) -> bool:
+        self.__settings = {
+            'name_project': self.__nameProject,
+            'version': self.__version,
+            'version_engine': self.__versionEngine,
+            'requirements': self.__requirements,
+            'path_assets': self.__pathAssets,
+            'path_scene': self.__pathScene,
+            'path_scripts': self.__pathScripts,
+            'compiler': self.__compiler,
+            'fps': self.__fps,
+            'width_window': self.__width_window,
+            'height_window': self.__height_window,
+            'current_scene': self.__current_scene
+        }
+
         if self.__settings is None:
             return False
 
         with open(self.__path, "w") as file:
-             json.dump(file, self.__settings)
-
+            json.dump(self.__settings, file, indent=4)
         return True
 
     def load(self) -> bool:
-        with open(self.__path) as file:
-            settings = json.load(file)
-
-        if settings is None:
+        settings = None
+        try:
+            with open(self.__path) as file:
+                settings = json.load(file)
+        except:
             print("failed to load settings")
             return False
 
@@ -188,3 +206,7 @@ class Settings:
     @property
     def current_scene(self) -> str:
         return self.__current_scene
+
+    @property
+    def is_new(self):
+        return self.__is_new

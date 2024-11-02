@@ -21,7 +21,7 @@ class Project:
         files_scenes = glob(os.path.join(path_scenes, '*.json'))
 
         for file in files_scenes:
-            self.__scenes.append(Scene(file))
+            self.__scenes.append(Scene(path_scenes, file))
 
         print(f"{len(self.__scenes)} scenes was successfully loaded")
         return self.__scenes
@@ -36,7 +36,7 @@ class Project:
         path_scene = self.__path + "/" + self.__settings.path_scene + name + ".json"
 
         with open(path_scene, 'w') as file:
-            json.dump(file, scene)
+            json.dump(scene, file)
 
     def get_scenes(self) -> List[Scene]:
         return self.__scenes
