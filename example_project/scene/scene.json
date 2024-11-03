@@ -9,7 +9,7 @@
           "name": "object1",
           "type": "object",
           "properties": {
-            "class": "scripts/Object.py",
+            "class": "E:\\Developer\\python\\PyLive-Engine\\example_project\\scripts\\Object.py",
             "className": "CustomObject",
             "position": {
               "x": 100,
@@ -25,7 +25,7 @@
               "b": 255
             },
             "image": {
-              "path_file": "assets/images.png"
+              "path_file": "E:\\Developer\\python\\PyLive-Engine\\example_project\\assets\\images.png"
             }
           }
         },
@@ -33,7 +33,7 @@
           "name": "object2",
           "type": "object",
           "properties": {
-            "class": "scripts/Object.py",
+            "class": "E:\\Developer\\python\\PyLive-Engine\\example_project\\scripts\\Object.py",
             "className": "CustomObject",
             "position": {
               "x": 0,

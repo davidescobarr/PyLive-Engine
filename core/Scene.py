@@ -1,4 +1,5 @@
 import json
+from inspect import isclass
 from typing import Optional
 
 from core.events.Event import Event
@@ -25,6 +26,10 @@ class Scene:
     def name(self, name: str):
         self.__name = name
 
+    @property
+    def main_group(self) -> Group:
+        return self.__main_group
+
     def get_scene_file(self):
         return self.__file_path
 
@@ -40,32 +45,38 @@ class Scene:
             print("scene.py:13 error while loading scene: scene file not found")
             return None
 
-        self.__main_group = self.load_group(scene_file['objects'])
+        self.__main_group = self.load_group(scene_file['objects'], 0, "main_group")
         return self
 
-    def load_object(self, object) -> Optional[SceneObject | None]:
+    def load_object(self, object: Object, order: int) -> Optional[SceneObject | None]:
         properties = object['properties']
-        object = load_class_from_file(self.__path_project + properties['class'], properties['className'])
-        if isinstance(object, Object):
-            object.load_properties(properties)
-            self.__objects.append(object)
-            return SceneObject(self, object)
+        name = object['name']
+        load_object = load_class_from_file(properties['class'], properties['className'])
+        if isinstance(load_object, Object) or load_object.__class__.__name__ == properties['className']:
+            load_object.name = name
+            load_object.load_properties(properties)
+            self.__objects.append(load_object)
+            return SceneObject(self, load_object, order)
         else:
-            print("Class object not extends base class Object! scene.py:29")
+            print("Class object not extends base class Object! scene.py:60")
 
         return None
 
-    def load_group(self, group) -> Group:
-        if "name" in group:
-            scene_group = Group(self, group["name"])
-        else:
-            scene_group = Group(self, "group")
+    def load_group(self, group, order: int, name: str) -> Group:
+        scene_group = Group(self, name, order)
 
+        order = 0
         for object in group:
             if object['type'] == "group":
-                scene_group.add_object(self.load_group(object['objects']))
+                scene_group.add_object(self.load_group(object['objects'], order, object['name']))
             if object['type'] == "object":
-                scene_group.add_object(self.load_object(object))
+                load_object = self.load_object(object, order)
+                if load_object:
+                    scene_group.add_object(load_object)
+                else:
+                    continue
+
+            order += 1
 
         return scene_group
 
@@ -82,7 +93,9 @@ class Scene:
 
     def save(self):
         scene = Scene.default_structure(self.name)
-        scene['objects'] = self.__main_group.to_dict()
+        main_group = self.__main_group
+        for object in self.__main_group.to_dict()['objects']:
+            scene['objects'].append(object)
 
         with open(self.__file_path, 'w') as file:
             json.dump(scene, file)

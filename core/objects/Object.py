@@ -35,6 +35,15 @@ class Object(pygame.sprite.Sprite, Image):
         self.__type = TypesObject.Square
         self.__color = (255, 255, 255)
         self.__position = Position(0, 0)
+        self.__name = "object"
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @name.setter
+    def name(self, name: str):
+        self.__name = name
 
     def get_size(self) -> Size:
         return self.__size
@@ -77,7 +86,7 @@ class Object(pygame.sprite.Sprite, Image):
 
         if "image" in properties and isinstance(self, Image):
             image = properties["image"]["path_file"]
-            self.set_image("example_project/" + image)
+            self.set_image(image)
 
     def move(self, x: int, y: int):
         position = self.__position

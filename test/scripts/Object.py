@@ -1,7 +1,7 @@
 from typing import override
 
 from core.events.Event import Event
-from core.objects.Object import Object
+from core.objects.Object import Object, Position
 
 
 class CustomObject(Object):

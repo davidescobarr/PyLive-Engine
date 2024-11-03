@@ -7,8 +7,8 @@ from core.scene.SceneComponent import SceneComponent
 
 
 class SceneObject(SceneComponent):
-    def __init__(self, scene: Scene, object: Object):
-        super().__init__("object", scene)
+    def __init__(self, scene: Scene, object: Object, order: int):
+        super().__init__("object", scene, order)
         self.__object = object
 
     def set_size(self, size: Size) -> None:
@@ -20,10 +20,18 @@ class SceneObject(SceneComponent):
     def set_new_class(self, new_class: Object.__class__) -> None:
         self.__object = new_class()
 
+    @property
+    def name(self) -> str:
+        return self.__object.name
+
+    @name.setter
+    def name(self, name: str):
+        self.__object.name = name
+
     @override
     def to_dict(self) -> {}:
         dict_object = {
-            "name": "name",
+            "name": self.name,
             "type": self.type,
             "properties": {
                 "class": sys.modules[self.__object.__class__.__module__].__file__,

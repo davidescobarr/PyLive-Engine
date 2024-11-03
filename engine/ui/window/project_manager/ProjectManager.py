@@ -1,14 +1,4 @@
-# -*- coding: utf-8 -*-
-import os
 from datetime import datetime
-
-################################################################################
-## Form generated from reading UI file 'designerbdYTeA.ui'
-##
-## Created by: Qt User Interface Compiler version 6.7.2
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect,
                             QSize, Qt, QAbstractTableModel)
@@ -19,7 +9,6 @@ from PySide6.QtWidgets import (QFrame, QGridLayout, QGroupBox,
                                QHeaderView, QLabel, QPushButton,
                                QScrollArea, QSizePolicy, QTableView, QWidget, QStyledItemDelegate, QDialog, QLineEdit,
                                QFileDialog, QMessageBox, QVBoxLayout)
-import engine.ui.window.project_manager.ProjectManager_rc
 from engine.core.Loader import Loader
 from engine.ui.window.project_manager.ProjectManager_logic import LastProject, Projects
 
