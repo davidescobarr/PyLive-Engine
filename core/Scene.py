@@ -83,6 +83,9 @@ class Scene:
     def get_objects(self):
         return self.__objects
 
+    def update(self):
+        pass
+
     def update_objects(self):
         for object in self.__objects:
             object.update()
