@@ -9,12 +9,10 @@ from core.scene.SceneComponent import SceneComponent
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject
 
-
 class HierarchyItem(QTreeWidgetItem):
     def __init__(self, object: SceneComponent):
         super().__init__([object.name])
         self.object = object
-
 
 class FolderItem(HierarchyItem):
     def __init__(self, group: Group):
@@ -27,7 +25,6 @@ class ObjectItem(HierarchyItem):
         super().__init__(object)
         # Файл не поддерживает drop, но оставляем возможность перемещаться внутри родительской папки
         self.setFlags(self.flags() & ~Qt.ItemIsDropEnabled | Qt.ItemIsDragEnabled)
-
 
 class HierarchyWidget(QTreeWidget):
     def __init__(self, scene: Scene, parent=None):
@@ -66,40 +63,37 @@ class HierarchyWidget(QTreeWidget):
 
     def dropEvent(self, event):
         source_item = self.currentItem()
-        target_item = self.itemAt(event.pos())
-        parent = source_item.parent()
 
         if not isinstance(source_item, HierarchyItem):
+            super().dropEvent(event)
             return
 
-        if target_item is not None:
-            if parent is not None and isinstance(parent, FolderItem):
-                parent.object.remove_object(parent.indexOfChild(source_item))
-            else:
-                self.scene.main_group.remove_object(self.indexOfTopLevelItem(source_item))
+        if source_item.parent():
+            parent_item = source_item.parent()
 
-        super().dropEvent(event)  # Выполняем стандартное событие drop
+            if isinstance(parent_item, FolderItem):
+                parent_item.object.remove_object(parent_item.indexOfChild(source_item))
+        else:
+            self.scene.main_group.remove_object(self.indexOfTopLevelItem(source_item))
 
-        parent = target_item.parent()
+        super().dropEvent(event)
 
-        if target_item is not None:
-            if isinstance(target_item, FolderItem):
-                source_item.object.order = target_item.indexOfChild(source_item)
-                target_item.object.add_object(source_item.object)
-            elif parent is not None and isinstance(parent, FolderItem):
-                source_item.object.order = parent.indexOfChild(source_item)
-                parent.object.add_object(source_item.object)
-            else:
-                source_item.object.order = self.indexOfTopLevelItem(source_item)
-                self.scene.main_group.add_object(source_item.object)
+        if source_item.parent():
+            parent_item = source_item.parent()
 
-        self.scene.save()
+            if isinstance(parent_item, FolderItem):
+                source_item.object.order = parent_item.indexOfChild(source_item)
+
+                parent_item.object.add_object(source_item.object)
+        else:
+            source_item.object.order = self.indexOfTopLevelItem(source_item)
+            self.scene.main_group.add_object(source_item.object)
+
+        self.scene.update()
 
     def rename_item(self, item: HierarchyItem, name: str):
         item.setText(0, name)
         item.object.name = name
-
-        self.scene.save()
 
     def delete_item(self, item: HierarchyItem):
         parent = item.parent()
@@ -117,34 +111,31 @@ class HierarchyWidget(QTreeWidget):
         else:
             self.scene.main_group.remove_object(order)
 
-        self.scene.save()
+    def create_folder(self):
+        new_group = Group(self.scene, "group", -1)
+        self.scene.main_group.add_object(new_group)
+        self.addTopLevelItem(self.new_group(new_group))
 
-    def contextMenuEvent(self, event):
-        item = self.itemAt(event.pos())
+    def create_object(self):
+        object = Object()
+        object.name = "object"
+        new_object = SceneObject(self.scene, object, -1)
+        self.scene.main_group.add_object(new_object)
+        self.addTopLevelItem(self.new_object(new_object))
 
-        context_menu = QMenu(self)
+    def empty_click_context_menu(self, context_menu: QMenu, event):
+        create_folder_action = context_menu.addAction("Создать папку")
+        create_object_action = context_menu.addAction("Создать объект")
 
-        if item is None or not isinstance(item, HierarchyItem):
-            create_folder_action = context_menu.addAction("Создать папку")
-            create_object_action = context_menu.addAction("Создать объект")
+        action = context_menu.exec(event.globalPos())
 
-            action = context_menu.exec(event.globalPos())
+        if action == create_folder_action:
+            self.create_folder()
 
-            if action == create_folder_action:
-                new_group = Group(self.scene, "group", -1)
-                self.scene.main_group.add_object(new_group)
-                self.addTopLevelItem(self.new_group(new_group))
+        elif action == create_object_action:
+            self.create_object()
 
-            elif action == create_object_action:
-                object = Object()
-                object.name = "object"
-                new_object = SceneObject(self.scene, object , -1)
-                self.scene.main_group.add_object(new_object)
-                self.addTopLevelItem(self.new_object(new_object))
-
-            self.scene.save()
-            return
-
+    def click_by_object_context_menu(self, context_menu: QMenu, event, item: HierarchyItem):
         rename_action = context_menu.addAction("Изменить название")
         delete_action = context_menu.addAction("Удалить")
 
@@ -160,3 +151,18 @@ class HierarchyWidget(QTreeWidget):
                                          QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.delete_item(item)
+
+    def contextMenuEvent(self, event):
+        item = self.itemAt(event.pos())
+
+        context_menu = QMenu(self)
+
+        if item is None:
+            self.empty_click_context_menu(context_menu, event)
+
+            return
+
+        if not isinstance(item, HierarchyItem):
+            return
+
+        self.click_by_object_context_menu(context_menu, event, item)
