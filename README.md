@@ -15,4 +15,5 @@ Current tasks:
 - [ ] Task 11: Change design to modern
 - [ ] Task 12: Add support scripts/mods (python)
 - [ ] Task 13: Add support multiplayer
-- [ ] Task 14: Add ability create object in game
+- [ ] Task 14: Adding interface for create object in game(Code)
+- [ ] Task 15: Adding ability for create new scenes and change
