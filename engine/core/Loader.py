@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QMainWindow
 
 from core.Settings import Settings
 from engine.core.Project import Project
-from engine.ui.window.engine.Engine import Engine_UI
+from engine.ui.window.engine.Engine import EngineUI
 
 
 class Loader:
@@ -38,7 +38,7 @@ class Loader:
 
         project.init_current_scene(project.get_scenes()[0])
 
-        self.MainWindow.engine = Engine_UI(self.MainWindow, project)
+        self.MainWindow.engine = EngineUI(self.MainWindow, project)
 
         return True
 

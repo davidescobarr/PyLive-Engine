@@ -45,5 +45,9 @@ class Project:
         return self.__current_scene
 
     @property
+    def current_object(self):
+        return self.__current_object
+
+    @property
     def settings(self) -> Settings:
         return self.__settings

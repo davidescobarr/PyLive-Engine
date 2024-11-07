@@ -14,7 +14,7 @@ from core.Settings import Settings
 
 class Game:
     def __init__(self, settings: Settings):
-        self.__settings =  settings
+        self.__settings = settings
         self.__game_loop = False
         self.__render = None
         self.__scenes = []
@@ -22,34 +22,42 @@ class Game:
         self.__clock = pygame.time.Clock()
 
     def load_scenes(self) -> bool:
-        files_scenes = self.get_files("./" + self.__settings.name_project + self.__settings.path_scene)
+        """Load scene files based on settings and initialize Scene objects."""
+        scenes_dir = "./" + self.__settings.name_project + self.__settings.path_scene
+        files_scenes = self.get_files(scenes_dir)
 
-        if len(files_scenes) == 0:
+        if not files_scenes:
             print("Scenes not found while loading game; core.py:28")
             return False
 
         for scene_file in files_scenes:
             self.__scenes.append(Scene(scene_file))
+        return True
 
     def get_render(self) -> Render:
+        """Returns the render object."""
         return self.__render
 
     def run(self):
+        """Initialize PyGame, load scenes, and start the game loop."""
         print("Init PyGame...")
         pygame.init()
+
         print("Load scenes...")
-        self.load_scenes()
+        if not self.load_scenes():
+            return
 
         print("Load objects from scene...")
         self.__current_scene = self.__scenes[0].load_objects()
 
         if self.__current_scene is None:
-            print("Scene can't loaded while start game; core.py:44")
+            print("Scene can't be loaded; core.py:44")
             return
 
         print("Init render...")
         if not pygame.image.get_extended():
-            print("Your system not supported png and jpeg formats for images")
+            print("Your system does not support PNG and JPEG formats for images")
+
         self.__render = Render(self.__current_scene, self.__settings.width_window, self.__settings.height_window)
 
         print("Start game loop...")
@@ -57,6 +65,7 @@ class Game:
         self.game_loop()
 
     def game_loop(self):
+        """Main game loop to process events, update objects, and render."""
         while self.__game_loop:
             self.__render.update()
 
@@ -65,15 +74,16 @@ class Game:
                     self.__current_scene.on_event(EventQuit())
                     pygame.quit()
                     sys.exit()
-                elif event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEWHEEL or event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
+                elif event.type in (
+                pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
                     self.__current_scene.on_event(EventMouse(event))
-                elif event.type == pygame.KEYUP or event.type == pygame.KEYDOWN:
+                elif event.type in (pygame.KEYUP, pygame.KEYDOWN):
                     self.__current_scene.on_event(EventKeyboard(event))
 
             self.__current_scene.update_objects()
-
             self.__clock.tick(self.__settings.fps)
 
     @staticmethod
-    def get_files(dir):
-        return glob(os.path.join(dir, '*.json'))
+    def get_files(directory):
+        """Get a list of JSON files in the specified directory."""
+        return glob(os.path.join(directory, '*.json'))

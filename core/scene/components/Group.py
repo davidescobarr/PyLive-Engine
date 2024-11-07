@@ -2,6 +2,8 @@ from typing import List, override
 
 from core import Scene
 from core.scene.SceneComponent import SceneComponent
+from core.utils.decorators.PropertyValue import VisibleValue
+
 
 class Group(SceneComponent):
     def __init__(self, scene: Scene, name: str, order: int):
@@ -30,7 +32,7 @@ class Group(SceneComponent):
     def get_objects(self) -> List[SceneComponent]:
         return self.__objects
 
-    @property
+    @VisibleValue
     def name(self) -> str:
         return self.__name
 
