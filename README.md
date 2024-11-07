@@ -4,7 +4,7 @@ This is an open-source game engine coded in Python. The core of the engine is Fr
 Current tasks:
 - [x] Task 1: Add engine window
 - [x] Task 2: Add ability hierarchy scene change
-- [ ] Task 3: Add ability change properties object from engine window
+- [x] Task 3: Add ability change properties object from engine window
 - [x] Task 4: Add ability add self objects to scene
 - [ ] Task 5: Add render game in engine and change mode game
 - [ ] Task 6: Add properties like physics, colliders
