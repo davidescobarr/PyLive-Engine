@@ -45,6 +45,10 @@ class Project:
         return self.__current_scene
 
     @property
+    def path_project(self):
+        return self.__path
+
+    @property
     def current_object(self):
         return self.__current_object
 

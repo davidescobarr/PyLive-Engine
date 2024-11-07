@@ -19,6 +19,7 @@ from PySide6.scripts.pyside_tool import project
 
 import engine.ui.window.engine.Engine_rc
 from engine.core.Project import Project
+from engine.ui.widget.Engine.FileManagerWidget import FileManagerWidget
 from engine.ui.widget.Engine.HierarchyWidget import HierarchyWidget
 from engine.ui.widget.Engine.PropertyWidget import PropertyEditor
 from engine.ui.window.engine.Engine_logic import Engine
@@ -112,6 +113,8 @@ class EngineUI:
         self.main_layout.addLayout(self.game_layout)
 
         self.file_explorer_layout = QVBoxLayout()
+        self.file_manager = FileManagerWidget(self.engine.project.path_project)
+        self.file_explorer_layout.addWidget(self.file_manager)
         self.file_explorer_layout.setObjectName(u"file_explorer")
 
         self.main_layout.addLayout(self.file_explorer_layout)
