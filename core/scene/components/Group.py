@@ -2,7 +2,6 @@ from typing import List, override
 
 from core import Scene
 from core.scene.SceneComponent import SceneComponent
-from core.utils.decorators.PropertyValue import VisibleValue
 
 
 class Group(SceneComponent):
@@ -22,6 +21,7 @@ class Group(SceneComponent):
                 new_objects.append(self.__objects[i])
 
         self.__objects = new_objects
+        self.scene.update_objects()
 
     def remove_object(self, order: int):
         if order < len(self.__objects):
@@ -32,7 +32,7 @@ class Group(SceneComponent):
     def get_objects(self) -> List[SceneComponent]:
         return self.__objects
 
-    @VisibleValue
+    @property
     def name(self) -> str:
         return self.__name
 

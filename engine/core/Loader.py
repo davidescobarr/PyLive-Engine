@@ -37,13 +37,16 @@ class Loader:
                 return False
 
         project.init_current_scene(project.get_scenes()[0])
+        project.get_current_scene().dev = True
 
-        self.MainWindow.engine = EngineUI(self.MainWindow, project)
+        self.main_window = QMainWindow()
+        self.main_window.engine_ui = EngineUI(self.main_window, project)
+        self.main_window.show()
 
-        return True
+        self.MainWindow.close()
 
     def create_project(self, folder: str, name_project: str) -> Project:
-        settings = Settings(folder + "/settings.json")
+        settings = Settings(folder + "/settings.json", folder)
 
         if not settings.is_new:
             return self.open_project(folder)
@@ -60,7 +63,7 @@ class Loader:
 
     @staticmethod
     def open_project(folder) -> Optional[None | Project]:
-        settings = Settings(folder + "/settings.json")
+        settings = Settings(folder + "/settings.json", folder)
 
         if settings.is_loaded:
             return Project(folder, settings)

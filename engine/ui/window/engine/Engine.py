@@ -20,6 +20,7 @@ from PySide6.scripts.pyside_tool import project
 import engine.ui.window.engine.Engine_rc
 from engine.core.Project import Project
 from engine.ui.widget.Engine.FileManagerWidget import FileManagerWidget
+from engine.ui.widget.Engine.GameEditorWidget import GameEditorWidget
 from engine.ui.widget.Engine.HierarchyWidget import HierarchyWidget
 from engine.ui.widget.Engine.PropertyWidget import PropertyEditor
 from engine.ui.window.engine.Engine_logic import Engine
@@ -38,7 +39,9 @@ class EngineUI:
             main_window.setObjectName(self.project.settings.name_project)
         main_window.resize(1200, 720)
         main_window.setMinimumSize(QSize(720, 520))
-        main_window.setMaximumSize(QSize(16000, 16000))
+        main_window.setMaximumSize(QSize(16777215, 16777215))
+
+        self.apply_modern_style()
 
         # Set window icon
         icon = QIcon()
@@ -108,6 +111,8 @@ class EngineUI:
         self.main_layout = QVBoxLayout()
         self.main_layout.setObjectName(u"main")
         self.game_layout = QVBoxLayout()
+        self.game_editor = GameEditorWidget(self.project)
+        self.game_layout.addWidget(self.game_editor)
         self.game_layout.setObjectName(u"game")
 
         self.main_layout.addLayout(self.game_layout)
@@ -149,6 +154,24 @@ class EngineUI:
         self.menu_project.addAction(self.action_save)
         self.menu_project.addAction(self.action_exit)
         self.menu_about.addAction(self.action_about)
+
+    def apply_modern_style(self):
+        """Apply a modern style to the widget."""
+        QApplication.setStyle('Fusion')
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.WindowText, Qt.white)
+        palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        palette.setColor(QPalette.ToolTipBase, Qt.white)
+        palette.setColor(QPalette.ToolTipText, Qt.white)
+        palette.setColor(QPalette.Text, Qt.white)
+        palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        palette.setColor(QPalette.ButtonText, Qt.white)
+        palette.setColor(QPalette.BrightText, Qt.red)
+        palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        palette.setColor(QPalette.HighlightedText, Qt.black)
+        QApplication.setPalette(palette)
 
     def retranslate_ui(self, main_window):
         """Set text translation for UI elements."""

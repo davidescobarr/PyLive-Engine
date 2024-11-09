@@ -1,3 +1,4 @@
+import threading
 import os
 import sys
 from glob import glob
@@ -7,8 +8,8 @@ import pygame
 from core.events.EventKeyboard import EventKeyboard
 from core.events.EventMouse import EventMouse
 from core.events.EventQuit import EventQuit
-from core.render import Render
-from core.scene import Scene
+from core.Render import Render
+from core.Scene import Scene
 from core.Settings import Settings
 
 
@@ -23,7 +24,7 @@ class Game:
 
     def load_scenes(self) -> bool:
         """Load scene files based on settings and initialize Scene objects."""
-        scenes_dir = "./" + self.__settings.name_project + self.__settings.path_scene
+        scenes_dir = self.__settings.folder + "/" + self.__settings.path_scene
         files_scenes = self.get_files(scenes_dir)
 
         if not files_scenes:
@@ -31,8 +32,11 @@ class Game:
             return False
 
         for scene_file in files_scenes:
-            self.__scenes.append(Scene(scene_file))
+            self.__scenes.append(Scene(scenes_dir, scene_file))
         return True
+
+    def set_scene(self, scene: Scene):
+        self.__current_scene = scene
 
     def get_render(self) -> Render:
         """Returns the render object."""
@@ -48,7 +52,8 @@ class Game:
             return
 
         print("Load objects from scene...")
-        self.__current_scene = self.__scenes[0].load_objects()
+        if not self.__current_scene:
+            self.__current_scene = self.__scenes[0].load_objects()
 
         if self.__current_scene is None:
             print("Scene can't be loaded; core.py:44")
@@ -62,7 +67,15 @@ class Game:
 
         print("Start game loop...")
         self.__game_loop = True
-        self.game_loop()
+        self.start_game_loop()
+
+    def stop(self):
+        self.__game_loop = False
+
+    def start_game_loop(self):
+        """Start the game loop in a separate thread."""
+        game_thread = threading.Thread(target=self.game_loop)
+        game_thread.start()
 
     def game_loop(self):
         """Main game loop to process events, update objects, and render."""
@@ -75,7 +88,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 elif event.type in (
-                pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
+                        pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
                     self.__current_scene.on_event(EventMouse(event))
                 elif event.type in (pygame.KEYUP, pygame.KEYDOWN):
                     self.__current_scene.on_event(EventKeyboard(event))

@@ -1,5 +1,4 @@
 import json
-from inspect import isclass
 from typing import Optional
 
 from core.events.Event import Event
@@ -17,6 +16,15 @@ class Scene:
         self.hierarchy_objects = []
         self.__main_group = None
         self.__name = self.get_scene_objects()["name"]
+        self.__dev = False
+
+    @property
+    def dev(self) -> bool:
+        return self.__dev
+
+    @dev.setter
+    def dev(self, value: bool):
+        self.__dev = value
 
     @property
     def name(self) -> str:
@@ -45,6 +53,7 @@ class Scene:
             print("scene.py:13 error while loading scene: scene file not found")
             return None
 
+        self.__objects = []
         self.__main_group = self.load_group(scene_file['objects'], 0, "main_group")
         return self
 
@@ -87,8 +96,9 @@ class Scene:
         pass
 
     def update_objects(self):
-        for object in self.__objects:
-            object.update()
+        if not self.__dev:
+            for object in self.__objects:
+                object.update()
 
     def on_event(self, event: Event):
         for object in self.__objects:

@@ -1,13 +1,13 @@
 from PySide6.QtWidgets import (
     QApplication, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget, QMessageBox, QMenu, QInputDialog
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QIcon, QPalette, QColor
 from core.Scene import Scene
 from core.objects.Object import Object
 from core.scene.SceneComponent import SceneComponent
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject
-from core.utils.FinderDecorators import find_visible_properties
 from core.utils.delegates.PropertyValueDelegate import property_value_delegate
 
 
@@ -21,9 +21,9 @@ class HierarchyItem(QTreeWidgetItem):
 
     def update_name(self, func):
         """Update item name when it is changed in the property editor."""
-        if not self.object.name:
+        if not self.object.name or not isinstance(self.object, SceneObject):
             return
-        if self.object.__class__.name == func:
+        if self.object.object.__class__.name == func:
             self.setText(0, self.object.name)
 
 
@@ -33,6 +33,7 @@ class FolderItem(HierarchyItem):
     def __init__(self, group: Group):
         super().__init__(group)
         self.setFlags(self.flags() | Qt.ItemIsDropEnabled)
+        self.setIcon(0, QIcon('icons/folder_icon.png'))  # Установить иконку для папки
 
 
 class ObjectItem(HierarchyItem):
@@ -41,6 +42,7 @@ class ObjectItem(HierarchyItem):
     def __init__(self, scene_object: SceneObject):
         super().__init__(scene_object)
         self.setFlags(self.flags() & ~Qt.ItemIsDropEnabled | Qt.ItemIsDragEnabled)
+        self.setIcon(0, QIcon('icons/object_icon.png'))  # Установить иконку для объекта
 
 
 class HierarchyWidget(QTreeWidget):
@@ -65,6 +67,7 @@ class HierarchyWidget(QTreeWidget):
 
     def init_scene_hierarchy(self):
         """Initialize the scene hierarchy."""
+        self.clear()
         if not self.scene:
             return
         for obj in self.scene.main_group.get_objects():
@@ -91,16 +94,13 @@ class HierarchyWidget(QTreeWidget):
         if not isinstance(source_item, HierarchyItem):
             super().dropEvent(event)
             return
-
         if source_item.parent():
             parent_item = source_item.parent()
             if isinstance(parent_item, FolderItem):
                 parent_item.object.remove_object(parent_item.indexOfChild(source_item))
         else:
             self.scene.main_group.remove_object(self.indexOfTopLevelItem(source_item))
-
         super().dropEvent(event)
-
         if source_item.parent():
             parent_item = source_item.parent()
             if isinstance(parent_item, FolderItem):
@@ -109,8 +109,7 @@ class HierarchyWidget(QTreeWidget):
         else:
             source_item.object.order = self.indexOfTopLevelItem(source_item)
             self.scene.main_group.add_object(source_item.object)
-
-        self.scene.update()
+        self.reload_hierarchy()
 
     def rename_item(self, item: HierarchyItem, name: str):
         """Rename the specified item."""
@@ -127,17 +126,19 @@ class HierarchyWidget(QTreeWidget):
         else:
             order = self.indexOfTopLevelItem(item)
             self.takeTopLevelItem(order)
-
         if isinstance(parent, FolderItem):
             parent.object.remove_object(order)
         else:
             self.scene.main_group.remove_object(order)
+
+        self.reload_hierarchy()
 
     def create_folder(self):
         """Create a new folder."""
         new_group = Group(self.scene, "group", -1)
         self.scene.main_group.add_object(new_group)
         self.addTopLevelItem(self.new_group(new_group))
+        self.reload_hierarchy()
 
     def create_object(self):
         """Create a new object."""
@@ -146,6 +147,12 @@ class HierarchyWidget(QTreeWidget):
         new_object = SceneObject(self.scene, obj, -1)
         self.scene.main_group.add_object(new_object)
         self.addTopLevelItem(self.new_object(new_object))
+        self.reload_hierarchy()
+
+    def reload_hierarchy(self):
+        self.scene.save()
+        self.scene.load_objects()
+        self.init_scene_hierarchy()
 
     def empty_click_context_menu(self, context_menu: QMenu, event):
         """Context menu for clicking on empty space."""

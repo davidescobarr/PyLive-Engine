@@ -1,5 +1,4 @@
 from core import Scene
-from core.utils.decorators.PropertyValue import VisibleValue
 
 
 class SceneComponent:
@@ -19,7 +18,7 @@ class SceneComponent:
         else:
             self.__order = -1
 
-    @VisibleValue
+    @property
     def name(self):
         return ""
 

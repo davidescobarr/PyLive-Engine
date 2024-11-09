@@ -4,10 +4,11 @@ from core.Scene import Scene
 
 
 class Settings:
-    def __init__(self, path_file_settings: str):
+    def __init__(self, path_file_settings: str, folder: str):
         self.__is_loaded = False
         self.__is_new = True
         self.__path = path_file_settings
+        self.__folder = folder
 
         self.__nameProject = ""
         self.__version = ""
@@ -210,3 +211,7 @@ class Settings:
     @property
     def is_new(self):
         return self.__is_new
+
+    @property
+    def folder(self):
+        return self.__folder
