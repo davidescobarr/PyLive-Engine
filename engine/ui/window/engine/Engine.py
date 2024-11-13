@@ -24,12 +24,14 @@ from engine.ui.widget.Engine.GameEditorWidget import GameEditorWidget
 from engine.ui.widget.Engine.HierarchyWidget import HierarchyWidget
 from engine.ui.widget.Engine.PropertyWidget import PropertyEditor
 from engine.ui.window.engine.Engine_logic import Engine
+from engine.ui.window.engine.settings.Settings import Settings_UI, SettingsDialog
 
 
 class EngineUI:
     def __init__(self, main_window, project: Project):
         self.project = project
         self.engine = Engine(project)
+        self.game_editor = None
         self.setup_ui(main_window)
 
     def setup_ui(self, main_window):
@@ -88,8 +90,13 @@ class EngineUI:
         self.action_exit.setObjectName(u"action_exit")
         self.action_settings = QAction(main_window)
         self.action_settings.setObjectName(u"action_settings")
+        self.action_settings.triggered.connect(self.open_settings_window)
         self.action_about = QAction(main_window)
         self.action_about.setObjectName(u"action_about")
+
+    def open_settings_window(self):
+        self.settings_dialog = SettingsDialog(self.project, self)
+        self.settings_dialog.exec_()
 
     def initialize_sections(self):
         """Initialize main sections of the UI."""
@@ -111,6 +118,8 @@ class EngineUI:
         self.main_layout = QVBoxLayout()
         self.main_layout.setObjectName(u"main")
         self.game_layout = QVBoxLayout()
+        if self.game_editor:
+            self.game_editor.game.stop()
         self.game_editor = GameEditorWidget(self.project)
         self.game_layout.addWidget(self.game_editor)
         self.game_layout.setObjectName(u"game")
@@ -139,6 +148,8 @@ class EngineUI:
         self.horizontal_layout_8.setStretch(1, 3)
         self.horizontal_layout_8.setStretch(2, 1)
 
+        if self.horizontal_layout.itemAt(0):
+            self.horizontal_layout.removeItem(self.horizontal_layout.itemAt(0))
         self.horizontal_layout.addLayout(self.horizontal_layout_8)
 
     def setup_menu(self):

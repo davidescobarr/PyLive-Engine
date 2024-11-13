@@ -1,0 +1,15 @@
+window.project_manager.version=Версия
+window.project_manager.button.projects=Проекты
+window.project_manager.button.settings=Настройки
+window.project_manager.button.about=О нас
+window.project_manager.projects.title=Проекты
+window.project_manager.projects.button.add=ДОБАВИТЬ
+window.project_manager.projects.button.new=НОВЫЙ
+window.project_manager.projects.table.project_name=Название проекта
+window.project_manager.projects.table.engine_version=Версия движка
+window.project_manager.projects.table.last_open=Последнее открытие
+window.project_manager.settings.title=Настройки
+window.project_manager.settings.choose_language=Выберите язык
+window.project_manager.about_us.title=О нас
+window.project_manager.about_us_text=Это игровой движок с открытым исходным кодом, написанный на Python. Ядро движка — FrameWork для библиотеки PyGame.
+window.settings.title=Настройки

@@ -88,7 +88,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 elif event.type in (
-                        pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
+                        pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION):
                     self.__current_scene.on_event(EventMouse(event))
                 elif event.type in (pygame.KEYUP, pygame.KEYDOWN):
                     self.__current_scene.on_event(EventKeyboard(event))

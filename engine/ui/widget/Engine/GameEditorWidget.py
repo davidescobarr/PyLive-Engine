@@ -39,7 +39,7 @@ class GameEditorWidget(QWidget):
     def start_rendering(self):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update)
-        self.timer.start(1000 // 60)  # 60 FPS
+        self.timer.start(1000 // 30)  # 60 FPS
 
     def mousePressEvent(self, event):
         # Handle mouse clicks in pygame

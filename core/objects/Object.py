@@ -4,6 +4,7 @@ from typing import override
 import pygame
 
 from core.events.Event import Event
+from core.events.EventMouse import EventMouse
 from core.properties.Image import Image
 from core.utils.Convertors import hex_to_rgb
 from core.utils.decorators.PropertyValue import VisibleValue
@@ -40,6 +41,7 @@ class Object(pygame.sprite.Sprite, Image):
         self.__position = Position(0, 0)
         self.__name = "object"
         self.__hex_color = "#FFFFFF"
+        self.__dragging = False
 
     @property
     def name(self) -> str:
@@ -110,7 +112,18 @@ class Object(pygame.sprite.Sprite, Image):
     def update(self, *args, **kwargs):
         pass
 
-    def on_event(self, event: Event):
+    def is_point_inside(self, x, y):
+        print(x, y)
+        pos = self.get_position()
+        size = self.get_size()
+
+        if pos is None or size is None:
+            return False
+
+        return (pos.x <= x <= pos.x + size.width and
+                pos.y <= y <= pos.y + size.height)
+
+    def on_event(self, event: EventMouse):
         pass
 
     def load_properties(self, properties):
@@ -128,4 +141,4 @@ class Object(pygame.sprite.Sprite, Image):
     def move(self, x: int, y: int):
         position = self.__position
         new_position = position.move(x, y)
-        self.set_position(new_position)
+        self.__position = new_position

@@ -1,0 +1,15 @@
+window.project_manager.version=Версія
+window.project_manager.button.projects=Праекты
+window.project_manager.button.settings=Налады
+window.project_manager.button.about=Пра нас
+window.project_manager.projects.title=Праекты
+window.project_manager.projects.button.add=ДАДАЦЬ
+window.project_manager.projects.button.new=НОВЫ
+window.project_manager.projects.table.project_name=Назва праекта
+window.project_manager.projects.table.engine_version=Версія рухавічка
+window.project_manager.projects.table.last_open=Апошняе адкрыццё
+window.project_manager.settings.title=Налады
+window.project_manager.settings.choose_language=Абярыце мову
+window.project_manager.about_us.title=Пра нас
+window.project_manager.about_us_text=Гэта гульнявы рухавік з адкрытым зыходным кодам, напісаны на Python. Сэрца рухавіка — фрэймворк для бібліятэкі PyGame.
+window.settings.title=Налады

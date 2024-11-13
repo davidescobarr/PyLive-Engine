@@ -2,6 +2,7 @@ import json
 from typing import Optional
 
 from core.events.Event import Event
+from core.events.EventMouse import EventMouse
 from core.objects.Object import Object
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject

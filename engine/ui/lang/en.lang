@@ -1,0 +1,15 @@
+window.project_manager.version=Version
+window.project_manager.button.projects=Projects
+window.project_manager.button.settings=Settings
+window.project_manager.button.about=About us
+window.project_manager.projects.title=Projects
+window.project_manager.projects.button.add=ADD
+window.project_manager.projects.button.new=NEW
+window.project_manager.projects.table.project_name=Project name
+window.project_manager.projects.table.engine_version=Engine version
+window.project_manager.projects.table.last_open=Last open
+window.project_manager.settings.title=Settings
+window.project_manager.settings.choose_language=Choose Language
+window.project_manager.about_us.title=About Us
+window.project_manager.about_us_text=This is an open-source game engine written in Python. The core of the engine is a framework for the PyGame library.
+window.settings.title=Settings
