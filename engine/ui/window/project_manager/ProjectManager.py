@@ -5,6 +5,8 @@ from PySide6.QtGui import (QCursor, QFont, QIcon, QPixmap)
 from PySide6.QtWidgets import (QFrame, QGridLayout, QGroupBox, QHeaderView, QLabel, QPushButton,
                                QScrollArea, QSizePolicy, QTableView, QWidget, QStyledItemDelegate,
                                QDialog, QLineEdit, QFileDialog, QMessageBox, QVBoxLayout, QComboBox)
+
+from core.Constants import VERSION_ENGINE
 from engine.core.Loader import Loader
 from engine.ui.lang.TextTranslater import text_translator, languages
 from engine.ui.window.project_manager.ProjectManager_logic import LastProject, Projects
@@ -426,7 +428,7 @@ class ProjectManager_UI:
         self.logo_icon_3.setText("")
         self.logo_text_3.setText(QCoreApplication.translate("MainWindow", "PyLive Engine", None))
         self.version_3.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate(
-            "window.project_manager.version") + " dev", None))
+            "window.project_manager.version") + f" {VERSION_ENGINE}", None))
         self.main_3.setTitle("")
         self.projects_3.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate(
             "window.project_manager.button.projects"), None))

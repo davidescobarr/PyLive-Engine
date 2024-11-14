@@ -1,9 +1,11 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QFormLayout, QLineEdit, QLabel, QCheckBox, QMessageBox, QTreeWidget
 )
 from core.scene.components.Object import SceneObject
 from core.utils.FinderDecorators import find_visible_properties
 from core.utils.delegates.PropertyValueDelegate import property_value_delegate
+from engine.ui.lang.TextTranslater import text_translator
 
 
 class PropertyEditor(QWidget):
@@ -12,6 +14,11 @@ class PropertyEditor(QWidget):
         self.obj = obj
         self.form_layout = QFormLayout()
         self.main_layout = QVBoxLayout()
+
+
+        self.main_layout.setAlignment(Qt.AlignTop)
+
+        self.main_layout.addWidget(QLabel(text_translator.get_translate("window.engine.property.title")))
         self.main_layout.addLayout(self.form_layout)
         self.setLayout(self.main_layout)
         if obj:

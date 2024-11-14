@@ -69,6 +69,11 @@ class Projects:
     def get_formatted_last_projects(self):
         formatted_projects = []
 
+        self.__projects = sorted(
+            self.__projects,
+            key=lambda project: project.last_open,
+            reverse=True)
+
         for project in self.__projects:
             formatted_projects.append({
                 "name": project.name,

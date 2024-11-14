@@ -95,6 +95,9 @@ class EngineUI:
 
         self.action_exit.triggered.connect(self.exit_app)
 
+        self.action_reload_scripts = QAction(main_window)
+        self.action_reload_scripts.setObjectName(u"action_reload_scripts")
+
         self.action_settings = QAction(main_window)
         self.action_settings.setObjectName(u"action_settings")
         self.action_settings.triggered.connect(self.open_settings_window)
@@ -189,14 +192,18 @@ class EngineUI:
         """Setup menu for the main window."""
         self.menu_project = QMenu(self.menubar)
         self.menu_project.setObjectName(u"menu_project")
+        self.menu_scripts = QMenu(self.menubar)
+        self.menu_scripts.setObjectName(u"menu_scripts")
         self.menu_about = QMenu(self.menubar)
         self.menu_about.setObjectName(u"menu_about")
 
         self.menubar.addAction(self.menu_project.menuAction())
+        self.menubar.addAction(self.menu_scripts.menuAction())
         self.menubar.addAction(self.menu_about.menuAction())
         self.menu_project.addAction(self.action_settings)
         self.menu_project.addAction(self.action_save)
         self.menu_project.addAction(self.action_exit)
+        self.menu_scripts.addAction(self.action_reload_scripts)
         self.menu_about.addAction(self.action_about)
 
     def apply_modern_style(self):
@@ -225,4 +232,6 @@ class EngineUI:
         self.action_settings.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.project.settings"), None))
         self.action_about.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.help.documentation"), None))
         self.menu_project.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.project"), None))
+        self.menu_scripts.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.scripts"), None))
         self.menu_about.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.help"), None))
+        self.action_reload_scripts.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.scripts.reload"), None))

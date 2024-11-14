@@ -1,5 +1,6 @@
 import json
 
+from core.Constants import VERSION_ENGINE
 from core.Scene import Scene
 from core.utils.delegates.PropertyValueDelegate import DelegateNotifier
 
@@ -36,7 +37,7 @@ class Settings:
     def set_default_values(self):
         self.__nameProject = "project"
         self.__version = "1.0"
-        self.__versionEngine = "alpha"
+        self.__versionEngine = VERSION_ENGINE
         self.__requirements = ""
         self.__pathAssets = "assets/"
         self.__pathScene = "scene/"
@@ -111,11 +112,6 @@ class Settings:
     def set_version(self, version: str) -> None:
         self.__version = version
         self.__settings['version'] = version
-        self.save()
-
-    def set_version_engine(self, version_engine: str) -> None:
-        self.__versionEngine = version_engine
-        self.__settings['version_engine'] = version_engine
         self.save()
 
     def set_requirements(self, requirements: str) -> None:
