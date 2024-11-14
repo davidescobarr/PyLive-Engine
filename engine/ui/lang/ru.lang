@@ -34,3 +34,6 @@ window.engine.hierarchy.rename.title=Переименование
 window.engine.hierarchy.rename.new_name=Новое имя:
 window.engine.hierarchy.delete.title=Подтверждение удаления
 window.engine.hierarchy.delete.describe=Удалить
+window.settings.button.apply=Подтвердить
+window.settings.current_scene.label.name=Текущее имя:
+window.settings.current_scene.button.name=Текущая сцена

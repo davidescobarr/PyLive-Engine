@@ -7,6 +7,7 @@ from core.objects.Object import Object
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject
 from core.utils.ClassLoader import load_class_from_file
+from core.utils.delegates.PropertyValueDelegate import DelegateNotifier
 
 
 class Scene:
@@ -22,6 +23,11 @@ class Scene:
         if scene_objects.__contains__("order_load"):
             self.__order_load = scene_objects['order_load']
         self.__dev = False
+
+        self.__notify_change_name = DelegateNotifier()
+
+    def set_notify_for_change_name(self, notify: callable):
+        self.__notify_change_name.subscribe(notify)
 
     @property
     def order_load(self):
@@ -48,6 +54,7 @@ class Scene:
     @name.setter
     def name(self, name: str):
         self.__name = name
+        self.__notify_change_name.notify()
 
     @property
     def main_group(self) -> Group:

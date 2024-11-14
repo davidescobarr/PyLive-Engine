@@ -34,3 +34,6 @@ window.engine.hierarchy.rename.title=Перайменаванне
 window.engine.hierarchy.rename.new_name=Новае імя:
 window.engine.hierarchy.delete.title=Пацвярджэнне выдалення
 window.engine.hierarchy.delete.describe=Выдаліць
+window.settings.button.apply=Пацвердзіць
+window.settings.current_scene.label.name=Сапраўдная імя:
+window.settings.current_scene.button.name=Сапраўдная сцэна

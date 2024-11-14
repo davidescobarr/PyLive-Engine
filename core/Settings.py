@@ -1,6 +1,7 @@
 import json
 
 from core.Scene import Scene
+from core.utils.delegates.PropertyValueDelegate import DelegateNotifier
 
 
 class Settings:
@@ -23,6 +24,8 @@ class Settings:
         self.__height_window = 0
         self.__current_scene = ""
         self.__settings = {}
+
+        self.__notify_update_name_project = DelegateNotifier()
 
         if not self.load():
             self.set_default_values()
@@ -96,10 +99,14 @@ class Settings:
 
         return True
 
+    def subscribe_change_title(self, func: callable):
+        self.__notify_update_name_project.subscribe(func)
+
     def set_name_project(self, name: str) -> None:
         self.__nameProject = name
         self.__settings['name_project'] = name
         self.save()
+        self.__notify_update_name_project.notify()
 
     def set_version(self, version: str) -> None:
         self.__version = version

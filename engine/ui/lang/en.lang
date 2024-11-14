@@ -34,3 +34,6 @@ window.engine.hierarchy.rename.title=Rename
 window.engine.hierarchy.rename.new_name=New name:
 window.engine.hierarchy.delete.title=Confirm Deletion
 window.engine.hierarchy.delete.describe=Delete
+window.settings.button.apply=Apply
+window.settings.current_scene.label.name=Name:
+window.settings.current_scene.button.name=Current Scene

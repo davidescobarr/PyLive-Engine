@@ -58,6 +58,10 @@ class HierarchyWidget(QTreeWidget):
         self.init_scene_hierarchy()
         self.itemClicked.connect(self.item_click)
         self.func_by_item_click = None
+        self.scene.set_notify_for_change_name(self.change_name_scene)
+
+    def change_name_scene(self):
+        self.setHeaderLabels([self.scene.name])
 
     def subscribe_by_item_choose(self, func):
         self.func_by_item_click = func

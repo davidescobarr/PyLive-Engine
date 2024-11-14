@@ -1,4 +1,4 @@
-class PropertyValueDelegate:
+class DelegateNotifier:
     def __init__(self):
         self.__subscribers = []
 
@@ -9,4 +9,4 @@ class PropertyValueDelegate:
     def subscribe(self, func):
         self.__subscribers.append(func)
 
-property_value_delegate = PropertyValueDelegate()
+property_value_delegate = DelegateNotifier()

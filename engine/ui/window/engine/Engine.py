@@ -36,6 +36,7 @@ class EngineUI:
         self.game_editor = None
         self.main_window = main_window
         self.setup_ui(main_window)
+        self.project.settings.subscribe_change_title(self.update_title)
 
     def setup_ui(self, main_window):
         """Setup UI elements for the main window."""
@@ -99,6 +100,9 @@ class EngineUI:
         self.action_settings.triggered.connect(self.open_settings_window)
         self.action_about = QAction(main_window)
         self.action_about.setObjectName(u"action_about")
+
+    def update_title(self):
+        self.main_window.setWindowTitle(QCoreApplication.translate("MainWindow", self.project.settings.name_project, None))
 
     def exit_app(self):
         self.main_window.close()

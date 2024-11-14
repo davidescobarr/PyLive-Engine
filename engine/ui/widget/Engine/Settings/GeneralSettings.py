@@ -2,6 +2,7 @@ from PySide6.QtWidgets import (QWidget, QLineEdit, QSpinBox, QPushButton, QVBoxL
                                QFormLayout, QMessageBox, QLayout)
 
 from engine.core.Project import Project
+from engine.ui.lang.TextTranslater import text_translator
 from engine.ui.widget.Engine.Settings.SettingGroup import SettingGroup
 
 
@@ -33,7 +34,7 @@ class GeneralSettings(SettingGroup):
         self.height_window_edit.setValue(self.settings.height_window)
 
         # Создаем кнопки
-        self.apply_button = QPushButton("Применить")
+        self.apply_button = QPushButton(text_translator.get_translate("window.settings.button.apply"))
 
         self.apply_button.clicked.connect(self.apply_settings)
 
