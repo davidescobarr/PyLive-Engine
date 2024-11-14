@@ -9,6 +9,7 @@ from core.scene.SceneComponent import SceneComponent
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject
 from core.utils.delegates.PropertyValueDelegate import property_value_delegate
+from engine.ui.lang.TextTranslater import text_translator
 
 
 class HierarchyItem(QTreeWidgetItem):
@@ -156,8 +157,8 @@ class HierarchyWidget(QTreeWidget):
 
     def empty_click_context_menu(self, context_menu: QMenu, event):
         """Context menu for clicking on empty space."""
-        create_folder_action = context_menu.addAction("Create Folder")
-        create_object_action = context_menu.addAction("Create Object")
+        create_folder_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.button.create_folder"))
+        create_object_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.button.create_object"))
         action = context_menu.exec(event.globalPos())
         if action == create_folder_action:
             self.create_folder()
@@ -166,15 +167,15 @@ class HierarchyWidget(QTreeWidget):
 
     def click_by_object_context_menu(self, context_menu: QMenu, event, item: HierarchyItem):
         """Context menu for clicking on an object."""
-        rename_action = context_menu.addAction("Rename")
-        delete_action = context_menu.addAction("Delete")
+        rename_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.object.rename"))
+        delete_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.object.delete"))
         action = context_menu.exec(event.globalPos())
         if action == rename_action:
-            new_name, ok = QInputDialog.getText(self, "Rename", "New name:")
+            new_name, ok = QInputDialog.getText(self, text_translator.get_translate("window.engine.hierarchy.rename.title"), text_translator.get_translate("window.engine.hierarchy.rename.new_name"))
             if ok and new_name:
                 self.rename_item(item, new_name)
         elif action == delete_action:
-            reply = QMessageBox.question(self, "Confirm Deletion", f"Delete {item.text(0)}?",
+            reply = QMessageBox.question(self, text_translator.get_translate("window.engine.hierarchy.delete.title"), f"{text_translator.get_translate("window.engine.hierarchy.delete.describe")} {item.text(0)}?",
                                          QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.delete_item(item)

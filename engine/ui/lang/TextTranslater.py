@@ -13,7 +13,7 @@ class Languages(Enum):
 languages = {
             "Русский": Languages.Russian,
             "English": Languages.English,
-            "Белорусский": Languages.Belarusian
+            "Беларускі": Languages.Belarusian
         }
 
 class TextTranslater:
