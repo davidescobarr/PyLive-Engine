@@ -19,6 +19,7 @@ from PySide6.scripts.pyside_tool import project
 
 import engine.ui.window.engine.Engine_rc
 from engine.core.Project import Project
+from engine.ui.lang.TextTranslater import text_translator
 from engine.ui.widget.Engine.FileManagerWidget import FileManagerWidget
 from engine.ui.widget.Engine.GameEditorWidget import GameEditorWidget
 from engine.ui.widget.Engine.HierarchyWidget import HierarchyWidget
@@ -30,8 +31,10 @@ from engine.ui.window.engine.settings.Settings import Settings_UI, SettingsDialo
 class EngineUI:
     def __init__(self, main_window, project: Project):
         self.project = project
+        self.project.set_notify_for_change_scene(notify=self.change_scene)
         self.engine = Engine(project)
         self.game_editor = None
+        self.main_window = main_window
         self.setup_ui(main_window)
 
     def setup_ui(self, main_window):
@@ -84,19 +87,44 @@ class EngineUI:
         """Setup actions for the main window."""
         self.action_save = QAction(main_window)
         self.action_save.setObjectName(u"action_save")
-        self.action_save.triggered.connect(self.project.get_current_scene().save)
+        self.action_save.triggered.connect(self.save_project)
 
         self.action_exit = QAction(main_window)
         self.action_exit.setObjectName(u"action_exit")
+
+        self.action_exit.triggered.connect(self.exit_app)
+
         self.action_settings = QAction(main_window)
         self.action_settings.setObjectName(u"action_settings")
         self.action_settings.triggered.connect(self.open_settings_window)
         self.action_about = QAction(main_window)
         self.action_about.setObjectName(u"action_about")
 
+    def exit_app(self):
+        self.main_window.close()
+
+    def save_project(self):
+        for scene in self.project.get_scenes():
+            scene.save()
+
     def open_settings_window(self):
         self.settings_dialog = SettingsDialog(self.project, self)
         self.settings_dialog.exec_()
+
+    def change_scene(self):
+        self.project.get_current_scene().load_objects()
+        self.clear_layout(self.horizontal_layout)
+        self.initialize_sections()
+
+    def clear_layout(self, layout: QLayout):
+        """Clear all widgets from the layout."""
+        if layout is not None:
+            while layout.count():
+                child = layout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+                elif child.layout():
+                    self.clear_layout(child.layout())
 
     def initialize_sections(self):
         """Initialize main sections of the UI."""
@@ -187,9 +215,9 @@ class EngineUI:
     def retranslate_ui(self, main_window):
         """Set text translation for UI elements."""
         main_window.setWindowTitle(QCoreApplication.translate("MainWindow", self.project.settings.name_project, None))
-        self.action_save.setText(QCoreApplication.translate("MainWindow", u"Сохранить", None))
-        self.action_exit.setText(QCoreApplication.translate("MainWindow", u"Выйти", None))
-        self.action_settings.setText(QCoreApplication.translate("MainWindow", u"Настройки", None))
-        self.action_about.setText(QCoreApplication.translate("MainWindow", u"Документация", None))
-        self.menu_project.setTitle(QCoreApplication.translate("MainWindow", u"Проект", None))
-        self.menu_about.setTitle(QCoreApplication.translate("MainWindow", u"Справка", None))
+        self.action_save.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.project.save"), None))
+        self.action_exit.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.project.exit"), None))
+        self.action_settings.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.project.settings"), None))
+        self.action_about.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.help.documentation"), None))
+        self.menu_project.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.project"), None))
+        self.menu_about.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.help"), None))

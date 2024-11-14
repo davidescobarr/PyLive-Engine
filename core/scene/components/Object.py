@@ -64,7 +64,4 @@ class SceneObject(SceneComponent):
         dict_object["properties"]["class"] = sys.modules[self.__object.__class__.__module__].__file__
         dict_object["properties"]["className"] = self.__object.__class__.__name__
 
-        if self.__object.is_use_image():
-            dict_object["properties"]["image"] = {"path_file": self.__object.get_path_image()}
-
         return dict_object

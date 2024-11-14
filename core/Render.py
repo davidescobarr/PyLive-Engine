@@ -1,6 +1,5 @@
 import pygame.display
 
-from core.objects.Object import TypesObject
 from core.properties.Image import Image
 from core.Scene import Scene
 
@@ -17,18 +16,7 @@ class Render:
         self.__sc.fill((0, 0, 0))
 
         for object in self.__scene.get_objects():
-            position = object.get_position()
-            size = object.get_size()
-
-            if isinstance(object, Image):
-                if object.is_use_image():
-                    object_surface = pygame.transform.scale(object.get_image(), (size.width, size.height))
-                    self.__sc.blit(object_surface, object_surface.get_rect(center=(position.x, position.y)))
-                    continue
-
-            match object.get_type().name:
-                case TypesObject.Square.name:
-                    pygame.draw.rect(self.__sc, object.get_color(), (position.x - size.width/2, position.y - size.height/2, size.width, size.height))
+            object.get_render(self.__sc)
 
         if not self.__scene.dev:
             pygame.display.flip()

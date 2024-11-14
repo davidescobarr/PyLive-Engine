@@ -36,8 +36,7 @@ class Loader:
                 print("Engine can't create new correctly scene...")
                 return False
 
-        project.init_current_scene(project.get_scenes()[0])
-        project.get_current_scene().dev = True
+        project.init_scene(project.get_scenes()[0], dev=True)
 
         self.main_window = QMainWindow()
         self.main_window.engine_ui = EngineUI(self.main_window, project)

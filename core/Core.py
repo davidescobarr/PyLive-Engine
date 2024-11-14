@@ -71,6 +71,7 @@ class Game:
 
     def stop(self):
         self.__game_loop = False
+        pygame.quit()
 
     def start_game_loop(self):
         """Start the game loop in a separate thread."""

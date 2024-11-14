@@ -1,14 +1,18 @@
 from PySide6.QtWidgets import (QWidget, QLineEdit, QSpinBox, QPushButton, QVBoxLayout, QHBoxLayout, QLabel,
-                               QFormLayout, QMessageBox)
+                               QFormLayout, QMessageBox, QLayout)
 
-from core.Settings import Settings
+from engine.core.Project import Project
+from engine.ui.widget.Engine.Settings.SettingGroup import SettingGroup
 
 
-class GeneralSettings(QWidget):
-    def __init__(self, settings: Settings, parent=None):
-        super().__init__(parent)
-        self.settings = settings
+class GeneralSettings(SettingGroup):
+    def __init__(self, project: Project):
+        self.project = project
+        self.settings = project.settings
 
+        super().__init__(project, "window.settings.general.button.name")
+
+    def setup_main_layout(self) -> QLayout:
         # Создаем компоненты ввода данных
         self.name_project_edit = QLineEdit(self.settings.name_project)
         self.version_edit = QLineEdit(self.settings.version)
@@ -30,7 +34,6 @@ class GeneralSettings(QWidget):
 
         # Создаем кнопки
         self.apply_button = QPushButton("Применить")
-        self.cancel_button = QPushButton("Отмена")
 
         self.apply_button.clicked.connect(self.apply_settings)
 
@@ -50,14 +53,12 @@ class GeneralSettings(QWidget):
 
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.apply_button)
-        button_layout.addWidget(self.cancel_button)
 
         main_layout = QVBoxLayout()
         main_layout.addLayout(form_layout)
         main_layout.addLayout(button_layout)
 
-        self.setLayout(main_layout)
-        self.setWindowTitle("Настройки")
+        return main_layout
 
     def apply_settings(self):
         # Сохранение новых значений в Settings
@@ -72,5 +73,3 @@ class GeneralSettings(QWidget):
         self.settings.set_fps(self.fps_edit.value())
         self.settings.set_width_window(self.width_window_edit.value())
         self.settings.set_height_window(self.height_window_edit.value())
-
-        QMessageBox.information(self, "Настройки", "Настройки успешно сохранены")

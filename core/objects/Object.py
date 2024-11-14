@@ -6,13 +6,9 @@ import pygame
 from core.events.Event import Event
 from core.events.EventMouse import EventMouse
 from core.properties.Image import Image
+from core.properties.Properties import Properties
 from core.utils.Convertors import hex_to_rgb
 from core.utils.decorators.PropertyValue import VisibleValue
-
-
-class TypesObject(Enum):
-    Square = "Square"
-
 
 class Position:
     def __init__(self, x: int, y: int):
@@ -31,12 +27,10 @@ class Size:
         self.height = height
 
 
-class Object(pygame.sprite.Sprite, Image):
+class Object(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        Image.__init__(self)
         self.__size = Size(20, 20)
-        self.__type = TypesObject.Square
         self.__color = (255, 255, 255)
         self.__position = Position(0, 0)
         self.__name = "object"
@@ -99,14 +93,21 @@ class Object(pygame.sprite.Sprite, Image):
     def get_position(self) -> Position:
         return self.__position
 
-    def get_type(self) -> TypesObject:
-        return self.__type
-
     def get_color(self) -> tuple[int, int, int]:
         return hex_to_rgb(self.__hex_color)
 
     def get_size(self) -> Size:
         return self.__size
+
+    def get_render(self, surface: pygame.Surface):
+        if isinstance(self, Properties) and self.have_alternative_render():
+            self.alternative_render(surface, self)
+        else:
+            self.render(surface)
+
+    def render(self, surface: pygame.Surface):
+        pygame.draw.rect(surface, self.get_color(),
+                         (self.get_position().x - self.get_size().width / 2, self.get_position().y - self.get_size().height / 2, self.get_size().width, self.get_size().height))
 
     @override
     def update(self, *args, **kwargs):

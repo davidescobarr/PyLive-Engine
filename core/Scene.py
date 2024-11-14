@@ -1,8 +1,8 @@
 import json
+import os
 from typing import Optional
 
 from core.events.Event import Event
-from core.events.EventMouse import EventMouse
 from core.objects.Object import Object
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject
@@ -16,8 +16,22 @@ class Scene:
         self.__objects = []
         self.hierarchy_objects = []
         self.__main_group = None
-        self.__name = self.get_scene_objects()["name"]
+        self.__order_load = 0
+        scene_objects = self.get_scene_objects()
+        self.__name = scene_objects["name"]
+        if scene_objects.__contains__("order_load"):
+            self.__order_load = scene_objects['order_load']
         self.__dev = False
+
+    @property
+    def order_load(self):
+        return self.__order_load
+
+    @order_load.setter
+    def order_load(self, value: int):
+        if value < 0:
+            value = 0
+        self.__order_load = value
 
     @property
     def dev(self) -> bool:
@@ -106,18 +120,25 @@ class Scene:
             object.on_event(event)
 
     def save(self):
-        scene = Scene.default_structure(self.name)
+        scene = Scene.default_structure(self.name, self.__order_load)
         main_group = self.__main_group
-        for object in self.__main_group.to_dict()['objects']:
-            scene['objects'].append(object)
+        if self.__main_group is None:
+            scene['objects'] = self.get_scene_objects()['objects']
+        else:
+            for object in self.__main_group.to_dict()['objects']:
+                scene['objects'].append(object)
 
         with open(self.__file_path, 'w') as file:
             json.dump(scene, file)
 
+    def delete(self):
+        os.remove(self.__file_path)
+
     @staticmethod
-    def default_structure(name: str) -> dict[str, str | list]:
+    def default_structure(name: str, order_load: int) -> dict[str, str | list]:
         scene = {
             "name": name,
+            "order_load": order_load,
             "objects": []
         }
 
