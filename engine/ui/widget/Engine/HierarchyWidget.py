@@ -102,17 +102,36 @@ class HierarchyWidget(QTreeWidget):
     def new_object(self, obj: SceneObject) -> ObjectItem:
         return ObjectItem(obj)
 
-    def dropEvent(self, event: QDropEvent):
+    def dropEvent(self, event: QDropEvent) -> None:
+        source_item = self.currentItem()
+        if not isinstance(source_item, HierarchyItem):
+            super().dropEvent(event)
+            if event.mimeData().hasUrls():
+                for url in event.mimeData().urls():
+                    file_path = url.toLocalFile()
+                    if file_path.endswith(".py"):
+                        target_item = self.itemAt(event.position().toPoint())
+                        if target_item:
+                            target_object = target_item.object
+                            if isinstance(target_object, SceneObject):
+                                self.handle_python_file_drop(file_path, url.fileName(), target_object)
+            return
+        if source_item.parent():
+            parent_item = source_item.parent()
+            if isinstance(parent_item, FolderItem):
+                parent_item.object.remove_object(parent_item.indexOfChild(source_item))
+        else:
+            self.scene.main_group.remove_object(self.indexOfTopLevelItem(source_item))
         super().dropEvent(event)
-        if event.mimeData().hasUrls():
-            for url in event.mimeData().urls():
-                file_path = url.toLocalFile()
-                if file_path.endswith(".py"):
-                    target_item = self.itemAt(event.position().toPoint())
-                    if target_item:
-                        target_object = target_item.object
-                        if isinstance(target_object, SceneObject):
-                            self.handle_python_file_drop(file_path, url.fileName(), target_object)
+        if source_item.parent():
+            parent_item = source_item.parent()
+            if isinstance(parent_item, FolderItem):
+                source_item.object.order = parent_item.indexOfChild(source_item)
+                parent_item.object.add_object(source_item.object)
+        else:
+            source_item.object.order = self.indexOfTopLevelItem(source_item)
+            self.scene.main_group.add_object(source_item.object)
+        self.reload_hierarchy()
 
     def handle_python_file_drop(self, file_path, file_name, target_object):
         load_object = load_class_from_file(file_path, file_name.removesuffix(".py"))
@@ -135,7 +154,8 @@ class HierarchyWidget(QTreeWidget):
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
-            event.acceptProposedAction()
+            return event.acceptProposedAction()
+        return super().dragEnterEvent(event)
 
     def rename_item(self, item: HierarchyItem, name: str):
         """Rename the specified item."""
