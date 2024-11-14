@@ -140,6 +140,7 @@ class EngineUI:
         self.hierarchy = QHBoxLayout()
         self.property_editor = PropertyEditor()
         self.hierarchy_widget = HierarchyWidget(self.engine.project.get_current_scene())
+        self.hierarchy_widget.subscribe_by_update_object(self.property_editor.update_object)
         self.hierarchy_widget.subscribe_by_item_choose(self.property_editor.set_current_object)
 
         self.hierarchy.addWidget(self.hierarchy_widget)

@@ -35,7 +35,6 @@ class Object(pygame.sprite.Sprite):
         self.__position = Position(0, 0)
         self.__name = "object"
         self.__hex_color = "#FFFFFF"
-        self.__dragging = False
 
     @property
     def name(self) -> str:
@@ -143,3 +142,7 @@ class Object(pygame.sprite.Sprite):
         position = self.__position
         new_position = position.move(x, y)
         self.__position = new_position
+
+    def copy_fields(self, other_object):
+        for attr, value in vars(other_object).items():
+            setattr(self, attr, value)

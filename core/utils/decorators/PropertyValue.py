@@ -47,7 +47,8 @@ class VisibleValue:
     @classmethod
     def find_visible_properties(cls, instance):
         visible_properties = []
-        for name, attr in instance.__class__.__dict__.items():
+        for name in dir(instance):
+            attr = getattr(instance.__class__, name, None)
             if isinstance(attr, cls):
                 value = getattr(instance, name)
                 if attr._is_visible:

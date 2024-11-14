@@ -1,14 +1,17 @@
+import copy
+
 from PySide6.QtWidgets import (
     QApplication, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget, QMessageBox, QMenu, QInputDialog
 )
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QIcon, QPalette, QColor
+from PySide6.QtCore import Qt, QTimer, QMimeData
+from PySide6.QtGui import QIcon, QPalette, QColor, QDragEnterEvent, QDropEvent
 from core.Scene import Scene
 from core.objects.Object import Object
 from core.scene.SceneComponent import SceneComponent
 from core.scene.components.Group import Group
 from core.scene.components.Object import SceneObject
-from core.utils.delegates.PropertyValueDelegate import property_value_delegate
+from core.utils.ClassLoader import load_class_from_file
+from core.utils.delegates.PropertyValueDelegate import property_value_delegate, DelegateNotifier
 from engine.ui.lang.TextTranslater import text_translator
 
 
@@ -55,10 +58,15 @@ class HierarchyWidget(QTreeWidget):
         self.setColumnCount(1)
         self.setHeaderLabels([scene.name])
         self.setDragDropMode(QTreeWidget.InternalMove)
+        self.setAcceptDrops(True)  # Разрешить прием дропа
         self.init_scene_hierarchy()
         self.itemClicked.connect(self.item_click)
         self.func_by_item_click = None
+        self.__notifier_by_update_object = DelegateNotifier()
         self.scene.set_notify_for_change_name(self.change_name_scene)
+
+    def subscribe_by_update_object(self, func: callable):
+        self.__notifier_by_update_object.subscribe(func)
 
     def change_name_scene(self):
         self.setHeaderLabels([self.scene.name])
@@ -94,27 +102,40 @@ class HierarchyWidget(QTreeWidget):
     def new_object(self, obj: SceneObject) -> ObjectItem:
         return ObjectItem(obj)
 
-    def dropEvent(self, event):
-        source_item = self.currentItem()
-        if not isinstance(source_item, HierarchyItem):
-            super().dropEvent(event)
-            return
-        if source_item.parent():
-            parent_item = source_item.parent()
-            if isinstance(parent_item, FolderItem):
-                parent_item.object.remove_object(parent_item.indexOfChild(source_item))
-        else:
-            self.scene.main_group.remove_object(self.indexOfTopLevelItem(source_item))
+    def dropEvent(self, event: QDropEvent):
         super().dropEvent(event)
-        if source_item.parent():
-            parent_item = source_item.parent()
-            if isinstance(parent_item, FolderItem):
-                source_item.object.order = parent_item.indexOfChild(source_item)
-                parent_item.object.add_object(source_item.object)
-        else:
-            source_item.object.order = self.indexOfTopLevelItem(source_item)
-            self.scene.main_group.add_object(source_item.object)
-        self.reload_hierarchy()
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                file_path = url.toLocalFile()
+                if file_path.endswith(".py"):
+                    target_item = self.itemAt(event.position().toPoint())
+                    if target_item:
+                        target_object = target_item.object
+                        if isinstance(target_object, SceneObject):
+                            self.handle_python_file_drop(file_path, url.fileName(), target_object)
+
+    def handle_python_file_drop(self, file_path, file_name, target_object):
+        load_object = load_class_from_file(file_path, file_name.removesuffix(".py"))
+        if load_object:
+            if isinstance(load_object, Object):
+                # Создаем глубокую копию старого объекта
+                old_object_copy = copy.deepcopy(target_object.object)
+
+                # Меняем класс объекта и инициализируем его
+                target_object.object.__class__ = load_object.__class__
+                target_object.object.__init__()
+
+                # Копируем поля из старого объекта в новый
+                target_object.object.copy_fields(old_object_copy)
+
+                self.__notifier_by_update_object.notify()
+                print("Successfully changed class and copied fields")
+            else:
+                print("Class object not extends base class Object! engine.ui.widget.Engine.HierarchyWidget.py:100")
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
 
     def rename_item(self, item: HierarchyItem, name: str):
         """Rename the specified item."""
@@ -161,8 +182,10 @@ class HierarchyWidget(QTreeWidget):
 
     def empty_click_context_menu(self, context_menu: QMenu, event):
         """Context menu for clicking on empty space."""
-        create_folder_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.button.create_folder"))
-        create_object_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.button.create_object"))
+        create_folder_action = context_menu.addAction(
+            text_translator.get_translate("window.engine.hierarchy.button.create_folder"))
+        create_object_action = context_menu.addAction(
+            text_translator.get_translate("window.engine.hierarchy.button.create_object"))
         action = context_menu.exec(event.globalPos())
         if action == create_folder_action:
             self.create_folder()
@@ -175,11 +198,15 @@ class HierarchyWidget(QTreeWidget):
         delete_action = context_menu.addAction(text_translator.get_translate("window.engine.hierarchy.object.delete"))
         action = context_menu.exec(event.globalPos())
         if action == rename_action:
-            new_name, ok = QInputDialog.getText(self, text_translator.get_translate("window.engine.hierarchy.rename.title"), text_translator.get_translate("window.engine.hierarchy.rename.new_name"))
+            new_name, ok = QInputDialog.getText(self,
+                                                text_translator.get_translate("window.engine.hierarchy.rename.title"),
+                                                text_translator.get_translate(
+                                                    "window.engine.hierarchy.rename.new_name"))
             if ok and new_name:
                 self.rename_item(item, new_name)
         elif action == delete_action:
-            reply = QMessageBox.question(self, text_translator.get_translate("window.engine.hierarchy.delete.title"), f"{text_translator.get_translate("window.engine.hierarchy.delete.describe")} {item.text(0)}?",
+            reply = QMessageBox.question(self, text_translator.get_translate("window.engine.hierarchy.delete.title"),
+                                         f"{text_translator.get_translate('window.engine.hierarchy.delete.describe')} {item.text(0)}?",
                                          QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.delete_item(item)

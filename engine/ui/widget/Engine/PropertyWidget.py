@@ -20,11 +20,14 @@ class PropertyEditor(QWidget):
         property_value_delegate.subscribe(self.update_value_property)
         self.setAutoFillBackground(True)
 
+    def update_object(self):
+        self.clear_form_layout()
+        self.create_form_fields()
+
     def set_current_object(self, obj: SceneObject):
         """Set the current object and update the form layout."""
         self.obj = obj
-        self.clear_form_layout()
-        self.create_form_fields()
+        self.update_object()
 
     def update_value_property(self, func):
         """Update the property value in the widget if the property changes."""
@@ -109,12 +112,12 @@ class PropertyEditor(QWidget):
     def _cast_value(self, value, current_value):
         """Cast the value to the appropriate type based on the current value."""
         try:
-            if isinstance(current_value, int):
+            if isinstance(current_value, bool):
+                return value
+            elif isinstance(current_value, int):
                 return int(value)
             elif isinstance(current_value, float):
                 return float(value)
-            elif isinstance(current_value, bool):
-                return value.lower() in ["true", "1", "yes"]
             return value
         except ValueError:
             return None

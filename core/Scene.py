@@ -83,7 +83,7 @@ class Scene:
         properties = object['properties']
         name = object['name']
         load_object = load_class_from_file(properties['class'], properties['className'])
-        if isinstance(load_object, Object) or load_object.__class__.__name__ == properties['className']:
+        if (load_object and isinstance(load_object, Object)) or load_object.__class__.__name__ == properties['className']:
             load_object.name = name
             load_object.load_properties(properties)
             self.__objects.append(load_object)

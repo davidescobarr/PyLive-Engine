@@ -10,19 +10,18 @@ import subprocess
 class FileManagerWidget(QWidget):
     def __init__(self, default_path=None, parent=None):
         super().__init__(parent)
-
-        # Инициализация файловой системы и представления
         self.layout = QVBoxLayout(self)
         self.model = QFileSystemModel()
         self.model.setRootPath(QDir.rootPath())
-
         self.tree = QTreeView()
         self.tree.setModel(self.model)
         self.tree.setRootIndex(self.model.index(default_path if default_path else QDir.rootPath()))
         self.tree.setSortingEnabled(True)
         self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree.setDragEnabled(True)
+        self.tree.setAcceptDrops(True)
+        self.tree.setDragDropMode(QTreeView.InternalMove)
         self.tree.customContextMenuRequested.connect(self.open_context_menu)
-
         self.layout.addWidget(self.tree)
         self.setLayout(self.layout)
 
@@ -31,17 +30,12 @@ class FileManagerWidget(QWidget):
         if len(indexes) > 0:
             index = indexes[0]
             file_path = self.model.filePath(index)
-
-            # Создание контекстного меню
             context_menu = QMenu()
-
-            # Добавление действий в контекстное меню
             context_menu.addAction(self.create_action("Open", lambda: self.open_file(file_path)))
             context_menu.addAction(self.create_action("Open With...", lambda: self.open_file_with(file_path)))
             context_menu.addAction(self.create_action("Create File", lambda: self.create_file(file_path)))
             context_menu.addAction(self.create_action("Rename", lambda: self.rename_file(file_path)))
             context_menu.addAction(self.create_action("Delete", lambda: self.delete_file(file_path)))
-
             context_menu.exec(self.tree.viewport().mapToGlobal(position))
 
     def create_action(self, name, method):
@@ -70,7 +64,6 @@ class FileManagerWidget(QWidget):
     def create_file(self, dir_path):
         if not os.path.isdir(dir_path):
             dir_path = os.path.dirname(dir_path)
-
         new_file_path, _ = QFileDialog.getSaveFileName(self, "Create File", dir_path)
         if new_file_path:
             open(new_file_path, 'w').close()
@@ -92,5 +85,4 @@ class FileManagerWidget(QWidget):
                 QMessageBox.critical(self, "Error", str(e))
 
     def refresh_model(self):
-        # Обновление модели для отображения изменений
         self.model.setRootPath(QDir.rootPath())
