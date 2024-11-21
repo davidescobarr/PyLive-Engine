@@ -63,12 +63,10 @@ class GeneralSettings(SettingGroup):
         # Сохранение новых значений в Settings
         self.settings.set_name_project(self.name_project_edit.text())
         self.settings.set_version(self.version_edit.text())
-        self.settings.set_version_engine(self.version_engine_edit.text())
         self.settings.set_requirements(self.requirements_edit.text())
         self.settings.set_path_assets(self.path_assets_edit.text())
         self.settings.set_path_scene(self.path_scene_edit.text())
         self.settings.set_path_scripts(self.path_scripts_edit.text())
-        self.settings.set_compiler(self.compiler_edit.text())
         self.settings.set_fps(self.fps_edit.value())
         self.settings.set_width_window(self.width_window_edit.value())
         self.settings.set_height_window(self.height_window_edit.value())

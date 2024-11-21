@@ -89,6 +89,9 @@ class Project:
     def get_current_scene(self) -> Scene:
         return self.__current_scene
 
+    def reload_scene(self, dev: bool = False):
+        self.init_scene(self.__current_scene, dev)
+
     @property
     def path_project(self):
         return self.__path
