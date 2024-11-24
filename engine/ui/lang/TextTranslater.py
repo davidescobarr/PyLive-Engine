@@ -1,9 +1,7 @@
 import os
 from enum import Enum
 from glob import glob
-
 from engine.core.GlobalSettings import global_settings
-
 
 class Languages(Enum):
     Russian = "ru"
@@ -73,8 +71,7 @@ class TextTranslater:
         """Get a list of JSON files in the specified directory."""
         return glob(os.path.join(directory, '*.lang'))
 
-
-text_translator = TextTranslater("E:/Developer/python/PyLive-Engine/engine/ui/lang")
+text_translator = TextTranslater("C:/Users/ender/Documents/Python/PyLive-Engine/engine/ui/lang")
 lang = TextTranslater.get_language_by_code(global_settings.lang)
 if lang is not None:
     text_translator.switch_language(lang)
