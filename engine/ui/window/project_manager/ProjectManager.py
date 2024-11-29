@@ -212,7 +212,7 @@ class ProjectManager_UI:
 
         self.version_3 = QLabel(self.header_3)
         self.version_3.setObjectName("version_3")
-        self.version_3.setGeometry(QRect(800, 0, 91, 50))
+        self.version_3.setGeometry(QRect(735, 0, 150, 50))
         sizePolicy1.setHeightForWidth(self.version_3.sizePolicy().hasHeightForWidth())
         self.version_3.setSizePolicy(sizePolicy1)
         self.version_3.setFont(font)
