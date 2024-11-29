@@ -1,10 +1,12 @@
 # PyLive-Engine
 This is an open-source game engine coded in Python. The core of the engine is FrameWork for the PyGame library
 
-Project status - active development
+Project status - Alpha version. Last update 29.11.2024
 
 How to install engine:
-in coming...
+- First, download the game engine sources
+- Next, run the installer.py script
+- And finally run main.py
 
 How to use engine:
 in coming...
