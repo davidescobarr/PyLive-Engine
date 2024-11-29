@@ -82,7 +82,10 @@ class Scene:
     def load_object(self, object: Object, order: int) -> Optional[SceneObject | None]:
         properties = object['properties']
         name = object['name']
-        load_object = load_class_from_file(properties['class'], properties['className'])
+        if properties['class'] == "default":
+            load_object = Object()
+        else:
+            load_object = load_class_from_file(self.path_project + properties['class'], properties['className'])
         if (load_object and isinstance(load_object, Object)) or load_object.__class__.__name__ == properties['className']:
             load_object.name = name
             load_object.load_properties(properties)
@@ -116,6 +119,10 @@ class Scene:
 
     def update(self):
         pass
+
+    @property
+    def path_project(self):
+        return self.__path_project
 
     def update_objects(self):
         if not self.__dev:

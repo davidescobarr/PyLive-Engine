@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QWidget, QLineEdit, QSpinBox, QPushButton, QVBoxL
                                QFormLayout, QMessageBox, QLayout)
 
 from engine.core.Project import Project
-from engine.ui.lang.TextTranslater import text_translator
+from engine.ui.lang.TextTranslater import text_translator, TextTranslater
 from engine.ui.widget.Engine.Settings.SettingGroup import SettingGroup
 
 
@@ -38,17 +38,24 @@ class GeneralSettings(SettingGroup):
 
         # Размещаем компоненты
         form_layout = QFormLayout()
-        form_layout.addRow("Имя проекта:", self.name_project_edit)
-        form_layout.addRow("Версия:", self.version_edit)
-        form_layout.addRow("Версия движка:", QLabel(self.settings.version_engine))
-        form_layout.addRow("Требования:", self.requirements_edit)
-        form_layout.addRow("Путь к ассетам:", self.path_assets_edit)
-        form_layout.addRow("Путь к сценам:", self.path_scene_edit)
-        form_layout.addRow("Путь к скриптам:", self.path_scripts_edit)
-        form_layout.addRow("Компилятор:", QLabel(self.settings.compiler))
-        form_layout.addRow("FPS:", self.fps_edit)
-        form_layout.addRow("Ширина окна:", self.width_window_edit)
-        form_layout.addRow("Высота окна:", self.height_window_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.name_project.name"),
+                           self.name_project_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.version"), self.version_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.engine_version"),
+                           QLabel(self.settings.version_engine))
+        form_layout.addRow(text_translator.get_translate("window.settings.general.requirements"),
+                           self.requirements_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.path_assets"), self.path_assets_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.path_scene"), self.path_scene_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.path_scripts"),
+                           self.path_scripts_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.compiler"),
+                           QLabel(self.settings.compiler))
+        form_layout.addRow(text_translator.get_translate("window.settings.general.fps"), self.fps_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.width_window"),
+                           self.width_window_edit)
+        form_layout.addRow(text_translator.get_translate("window.settings.general.height_window"),
+                           self.height_window_edit)
 
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.apply_button)

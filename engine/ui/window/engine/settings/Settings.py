@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (QApplication, QHBoxLayout, QScrollArea,
 
 from engine.core.Project import Project
 from engine.ui.lang.TextTranslater import text_translator
+from engine.ui.widget.Engine.Settings.CompileSettings import CompileSettings
 from engine.ui.widget.Engine.Settings.CurrentSceneSettings import CurrentSceneSettings
 from engine.ui.widget.Engine.Settings.GeneralSettings import GeneralSettings
 from engine.ui.widget.Engine.Settings.ScenesSettings import ScenesSettings
@@ -15,7 +16,7 @@ from engine.ui.widget.Engine.Settings.SettingGroup import ButtonQTreeWidgetItem
 class Settings_UI(object):
     def __init__(self, project: Project, form, main_window):
         super().__init__()
-        self.__settings_group = [GeneralSettings(project), ScenesSettings(project), CurrentSceneSettings(project)]
+        self.__settings_group = [GeneralSettings(project), ScenesSettings(project), CurrentSceneSettings(project), CompileSettings(project)]
         self.setupUi(form, project, main_window)
 
     def setupUi(self, form, project: Project, main_window):

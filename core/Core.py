@@ -42,10 +42,11 @@ class Game:
         """Returns the render object."""
         return self.__render
 
-    def run(self):
+    def run(self, dev: bool = False):
         """Initialize PyGame, load scenes, and start the game loop."""
         print("Init PyGame...")
         pygame.init()
+        pygame.display.set_caption(self.__settings.name_project)
 
         print("Load scenes...")
         if not self.load_scenes():
@@ -67,16 +68,19 @@ class Game:
 
         print("Start game loop...")
         self.__game_loop = True
-        self.start_game_loop()
+        self.start_game_loop(dev)
 
     def stop(self):
         self.__game_loop = False
         pygame.quit()
 
-    def start_game_loop(self):
-        """Start the game loop in a separate thread."""
-        game_thread = threading.Thread(target=self.game_loop)
-        game_thread.start()
+    def start_game_loop(self, dev: bool = False):
+        if dev:
+            """Start the game loop in a separate thread."""
+            game_thread = threading.Thread(target=self.game_loop)
+            game_thread.start()
+        else:
+            self.game_loop()
 
     def game_loop(self):
         """Main game loop to process events, update objects, and render."""

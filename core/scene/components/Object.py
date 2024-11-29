@@ -1,3 +1,4 @@
+import os
 import sys
 from typing import override
 
@@ -61,7 +62,14 @@ class SceneObject(SceneComponent):
             "properties": self.__object.save_properties()
         }
 
-        dict_object["properties"]["class"] = sys.modules[self.__object.__class__.__module__].__file__
-        dict_object["properties"]["className"] = self.__object.__class__.__name__
+        if type(self.__object) is Object:
+            dict_object["properties"]["class"] = "default"
+            dict_object["properties"]["className"] = self.__object.__class__.__name__
+        else:
+            class_path = sys.modules[self.__object.__class__.__module__].__file__
+            relative_class_path = os.path.relpath(class_path, self.scene.path_project)
+
+            dict_object["properties"]["class"] = relative_class_path
+            dict_object["properties"]["className"] = self.__object.__class__.__name__
 
         return dict_object

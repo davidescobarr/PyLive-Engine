@@ -13,7 +13,7 @@ class GameEditorWidget(QWidget):
         self.project = project
         self.game = Game(project.settings)
         self.game.set_scene(project.get_current_scene())
-        self.game.run()
+        self.game.run(dev=True)
         self.initUI()
         self.start_rendering()
 

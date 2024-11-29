@@ -42,7 +42,7 @@ class Settings:
         self.__pathAssets = "assets/"
         self.__pathScene = "scene/"
         self.__pathScripts = "scripts/"
-        self.__compiler = "default"
+        self.__compiler = "PyInstaller"
         self.__fps = 60
         self.__width_window = 400
         self.__height_window = 400
@@ -68,8 +68,13 @@ class Settings:
         if self.__settings is None:
             return False
 
-        with open(self.__path, "w") as file:
-            json.dump(self.__settings, file, indent=4)
+        try:
+            with open(self.__path, "w") as file:
+                json.dump(self.__settings, file, indent=4)
+        except:
+            print("Failed save settings")
+
+            return False
         return True
 
     def load(self) -> bool:
