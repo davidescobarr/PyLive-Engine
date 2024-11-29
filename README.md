@@ -10,10 +10,10 @@ How to use engine:
 in coming...
 
 Current tasks:
-- [ ] Task 1: Add compiler for game
+- [x] Task 1: Add compiler for game
 - [ ] Task 2: Compile FrameWork and use them like lib
 - [ ] Task 3: Compile engine
-- [ ] Task 4: Add properties lika physics, colliders
+- [ ] Task 4: Add properties like physics, colliders
 - [ ] Task 5: Fix events
 - [ ] Task 6: Try refactor project code
 - [ ] Task 7: Add documentation and some lessons for educate
