@@ -42,8 +42,14 @@ class Projects:
         return "./engine/settings/last_projects.json"
 
     def init_projects(self):
-        with open(get_settings()) as file:
-            settings = json.load(file)
+        try:
+            with open(get_settings()) as file:
+                settings = json.load(file)
+        except FileNotFoundError:
+            self.save()
+
+            with open(get_settings()) as file:
+                settings = json.load(file)
 
         json_projects = settings['projects']
         projects = []
