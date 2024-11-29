@@ -16,10 +16,10 @@ class GlobalSettings:
                 self.__path_to_file = path_to_file
                 self.__current_lang = data["current_language"]
                 return True
-        except:
-            pass
-
-        return False
+        except FileNotFoundError:
+            self.__path_to_file = path_to_file
+            self.save()
+            return self.load(path_to_file)
 
     def save(self):
         if self.__path_to_file != "":
