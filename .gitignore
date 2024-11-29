@@ -163,3 +163,7 @@ cython_debug/
 /old_engine/
 /example_project/
 /test/
+/engine/settings/last_projects.json
+/dist/
+/build/
+/StartGame.spec
