@@ -42,6 +42,10 @@ class Game:
         """Returns the render object."""
         return self.__render
 
+    def run_in_other_thread(self):
+        game_thread = threading.Thread(target=self.run)
+        game_thread.start()
+
     def run(self, dev: bool = False):
         """Initialize PyGame, load scenes, and start the game loop."""
         print("Init PyGame...")

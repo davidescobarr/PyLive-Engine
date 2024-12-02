@@ -123,7 +123,7 @@ class Object(pygame.sprite.Sprite):
         return (pos.x <= x <= pos.x + size.width and
                 pos.y <= y <= pos.y + size.height)
 
-    def on_event(self, event: EventMouse):
+    def on_event(self, event: Event):
         pass
 
     def load_properties(self, properties):

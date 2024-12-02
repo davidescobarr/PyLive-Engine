@@ -59,3 +59,4 @@ window.settings.general.compiler=Кампілятар:
 window.settings.general.fps=FPS:
 window.settings.general.width_window=Шырыня акна:
 window.settings.general.height_window=Вышыня акна:
+window.menu_bar.scene.start=Старт

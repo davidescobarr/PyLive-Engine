@@ -15,7 +15,11 @@ from PySide6.QtWidgets import (
     QMenu, QMenuBar, QSizePolicy, QStatusBar,
     QVBoxLayout, QWidget
 )
+
+import webbrowser
+
 import engine.ui.window.engine.Engine_rc
+from core.Core import Game
 from engine.core.Project import Project
 from engine.ui.lang.TextTranslater import text_translator
 from engine.ui.widget.Engine.FileManagerWidget import FileManagerWidget
@@ -96,6 +100,11 @@ class EngineUI:
         self.action_reload_scene = QAction(main_window)
         self.action_reload_scene.setObjectName(u"action_reload_scene")
 
+        self.action_start_scene = QAction(main_window)
+        self.action_start_scene.setObjectName(u"action_start_scene")
+
+        self.action_start_scene.triggered.connect(self.start_scene)
+
         self.action_reload_scene.triggered.connect(self.reload_scene)
 
         self.action_settings = QAction(main_window)
@@ -103,6 +112,12 @@ class EngineUI:
         self.action_settings.triggered.connect(self.open_settings_window)
         self.action_about = QAction(main_window)
         self.action_about.setObjectName(u"action_about")
+        self.action_about.triggered.connect(self.documentation)
+
+    def start_scene(self):
+        self.save_project()
+        game = Game(self.project.settings)
+        game.run_in_other_thread()
 
     def reload_scene(self):
         self.project.reload_scene(dev=True)
@@ -117,6 +132,9 @@ class EngineUI:
     def save_project(self):
         for scene in self.project.get_scenes():
             scene.save()
+
+    def documentation(self):
+        webbrowser.open('https://pylive-engine.ru/documentation', new=2)
 
     def open_settings_window(self):
         self.settings_dialog = SettingsDialog(self.project, self)
@@ -207,6 +225,7 @@ class EngineUI:
         self.menu_project.addAction(self.action_settings)
         self.menu_project.addAction(self.action_save)
         self.menu_project.addAction(self.action_exit)
+        self.menu_scene.addAction(self.action_start_scene)
         self.menu_scene.addAction(self.action_reload_scene)
         self.menu_about.addAction(self.action_about)
 
@@ -239,3 +258,4 @@ class EngineUI:
         self.menu_scene.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.scene"), None))
         self.menu_about.setTitle(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.help"), None))
         self.action_reload_scene.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.scene.reload"), None))
+        self.action_start_scene.setText(QCoreApplication.translate("MainWindow", text_translator.get_translate("window.menu_bar.scene.start"), None))

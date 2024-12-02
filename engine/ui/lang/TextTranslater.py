@@ -37,7 +37,7 @@ class TextTranslater:
             print("Language file not found")
             return
 
-    def get_translate(self, lang_key: str):
+    def get_translate(self, lang_key: str) -> str:
         if not self.__lang_keys.get(lang_key) is None:
             return self.__lang_keys.get(lang_key)
 

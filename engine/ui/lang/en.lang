@@ -59,3 +59,4 @@ window.settings.general.compiler=Compiler:
 window.settings.general.fps=FPS:
 window.settings.general.width_window=Window Width:
 window.settings.general.height_window=Window Height:
+window.menu_bar.scene.start=Start
