@@ -23,4 +23,5 @@ class Render:
             pygame.display.update()
 
     def get_surface(self):
+        self.update()
         return self.__sc

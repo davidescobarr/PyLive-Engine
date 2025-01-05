@@ -79,11 +79,7 @@ class Game:
         pygame.quit()
 
     def start_game_loop(self, dev: bool = False):
-        if dev:
-            """Start the game loop in a separate thread."""
-            game_thread = threading.Thread(target=self.game_loop)
-            game_thread.start()
-        else:
+        if not dev:
             self.game_loop()
 
     def game_loop(self):
