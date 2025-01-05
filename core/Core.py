@@ -88,22 +88,26 @@ class Game:
 
     def game_loop(self):
         """Main game loop to process events, update objects, and render."""
-        while self.__game_loop:
-            self.__render.update()
+        try:
+            while self.__game_loop:
+                self.__render.update()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.__current_scene.on_event(EventQuit())
-                    pygame.quit()
-                    sys.exit()
-                elif event.type in (
-                        pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION):
-                    self.__current_scene.on_event(EventMouse(event))
-                elif event.type in (pygame.KEYUP, pygame.KEYDOWN):
-                    self.__current_scene.on_event(EventKeyboard(event))
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.__current_scene.on_event(EventQuit())
+                        pygame.quit()
+                        sys.exit()
+                    elif event.type in (
+                            pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION):
+                        self.__current_scene.on_event(EventMouse(event))
+                    elif event.type in (pygame.KEYUP, pygame.KEYDOWN):
+                        self.__current_scene.on_event(EventKeyboard(event))
 
-            self.__current_scene.update_objects()
-            self.__clock.tick(self.__settings.fps)
+                self.__current_scene.update_objects()
+                self.__clock.tick(self.__settings.fps)
+        except:
+            print("Game crashed")
+            self.stop()
 
     @staticmethod
     def get_files(directory):
