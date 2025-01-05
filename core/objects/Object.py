@@ -1,11 +1,8 @@
-from enum import Enum
 from typing import override
 
 import pygame
 
 from core.events.Event import Event
-from core.events.EventMouse import EventMouse
-from core.properties.Image import Image
 from core.properties.Properties import Properties
 from core.utils.Convertors import hex_to_rgb
 from core.utils.decorators.PropertyValue import VisibleValue
