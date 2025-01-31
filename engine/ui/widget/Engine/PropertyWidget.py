@@ -1,6 +1,7 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QFormLayout, QLineEdit, QLabel, QCheckBox, QMessageBox, QTreeWidget
+    QWidget, QVBoxLayout, QFormLayout, QLineEdit, QLabel, QCheckBox, QMessageBox, QTreeWidget, QFileDialog, QPushButton,
+    QHBoxLayout
 )
 from core.scene.components.Object import SceneObject
 from core.utils.FinderDecorators import find_visible_properties
@@ -48,6 +49,8 @@ class PropertyEditor(QWidget):
             for path, name, value in find_visible_properties(self.obj.object):
                 if isinstance(value, bool):
                     self._add_checkbox(name, value)
+                elif isinstance(value, str) and value.startswith("file:"):
+                    self._add_fileinput(name, value)
                 else:
                     self._add_line_edit(name, value)
 
@@ -101,6 +104,38 @@ class PropertyEditor(QWidget):
         checkbox.stateChanged.connect(self.update_property)
         self.form_layout.addRow(QLabel(name), checkbox)
 
+    def _add_fileinput(self, name, value):
+        """Add a file input to the form layout."""
+        # Создаем текстовое поле
+        file_input = QLineEdit()
+        file_input.setText(value)
+        file_input.setObjectName(name)
+        file_input.setReadOnly(True)
+
+        # Создаем кнопку для открытия файлового диалога
+        file_button = QPushButton("Browse")
+        file_button.setObjectName(f"{name}_button")
+
+        # Функция для открытия диалога выбора файла
+        def open_file_dialog():
+            file_path, _ = QFileDialog.getOpenFileName(
+                self, "Select File", value, "All Files (*)"
+            )
+            if file_path:
+                file_input.setText("file:" + file_path)
+
+        file_input.textChanged.connect(self.update_property)
+        # Привязываем кнопку к функции
+        file_button.clicked.connect(open_file_dialog)
+
+        # Оборачиваем поле и кнопку в горизонтальный layout
+        file_layout = QHBoxLayout()
+        file_layout.addWidget(file_input)
+        file_layout.addWidget(file_button)
+
+        # Добавляем элемент в форму
+        self.form_layout.addRow(QLabel(name), file_layout)
+
     def _add_line_edit(self, name, value):
         """Add a line edit to the form layout."""
         line_edit = QLineEdit(str(value))
@@ -125,6 +160,9 @@ class PropertyEditor(QWidget):
                 return int(value)
             elif isinstance(current_value, float):
                 return float(value)
+            elif isinstance(current_value, str):
+                if current_value.startswith("file:"):
+                    return value
             return value
         except ValueError:
             return None

@@ -5,6 +5,7 @@ import pygame
 from core.events.Event import Event
 from core.properties.Properties import Properties
 from core.utils.Convertors import hex_to_rgb
+from core.utils.File import File
 from core.utils.decorators.PropertyValue import VisibleValue
 
 class Position:
@@ -32,6 +33,7 @@ class Object(pygame.sprite.Sprite):
         self.__position = Position(0, 0)
         self.__name = "object"
         self.__hex_color = "#FFFFFF"
+        self.__sprite = File("file:empty")
 
     @property
     def name(self) -> str:
@@ -85,6 +87,15 @@ class Object(pygame.sprite.Sprite):
     def height(self, value):
         if value >= 0:
             self.__size.height = value
+
+    @VisibleValue(path="sprite/", is_visible=True)
+    def sprite(self) -> str:
+        return self.__sprite.file
+
+    @sprite.setter
+    def sprite(self, sprite: str):
+        if sprite.startswith("file:"):
+            self.__sprite = File(sprite)
 
     def get_position(self) -> Position:
         return self.__position
